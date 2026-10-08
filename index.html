@@ -1,540 +1,543 @@
 <!DOCTYPE html>
 <html lang="ru" class="scroll-smooth">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Конский Навоз Премиум | Владислав Крестовина</title>
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FontAwesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
-                    },
-                    colors: {
-                        eco: {
-                            50: '#f2f8f3',
-                            100: '#e1f0e4',
-                            500: '#2d6a4f',
-                            600: '#1b4332',
-                            700: '#081c15',
-                            accent: '#52b788',
-                            gold: '#d4a373'
-                        }
-                    }
-                }
-            }
-        }
-    </script>
-    <style>
-        @keyframes fall {
-            0% {
-                transform: translateY(-10vh) rotate(0deg);
-                opacity: 0;
-            }
-            10% {
-                opacity: 0.8;
-            }
-            90% {
-                opacity: 0.8;
-            }
-            100% {
-                transform: translateY(110vh) rotate(360deg);
-                opacity: 0;
-            }
-        }
-        .falling-sticker {
-            position: fixed;
-            top: -50px;
-            z-index: 0;
-            pointer-events: none;
-            user-select: none;
-            animation-name: fall;
-            animation-timing-function: linear;
-            animation-iteration-count: infinite;
-        }
-        /* Custom scrollbar */
-        ::-webkit-scrollbar {
-            width: 10px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #081c15;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #2d6a4f;
-            border-radius: 5px;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Конский Навоз Премиум | Владислав Крестовина</title>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com"></script>
+<!-- FontAwesome Icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<script>
+tailwind.config = {
+theme: {
+extend: {
+fontFamily: {
+sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+},
+colors: {
+eco: {
+50: '#f2f8f3',
+100: '#e1f0e4',
+500: '#2d6a4f',
+600: '#1b4332',
+700: '#081c15',
+accent: '#52b788',
+gold: '#d4a373'
+}
+}
+}
+}
+}
+</script>
+<style>
+@keyframes fall {
+0% {
+transform: translateY(-10vh) rotate(0deg);
+opacity: 0;
+}
+10% {
+opacity: 0.8;
+}
+90% {
+opacity: 0.8;
+}
+100% {
+transform: translateY(110vh) rotate(360deg);
+opacity: 0;
+}
+}
+.falling-sticker {
+position: fixed;
+top: -50px;
+z-index: 0;
+pointer-events: none;
+user-select: none;
+animation-name: fall;
+animation-timing-function: linear;
+animation-iteration-count: infinite;
+}
+/* Custom scrollbar */
+::-webkit-scrollbar {
+width: 10px;
+}
+::-webkit-scrollbar-track {
+background: #081c15;
+}
+::-webkit-scrollbar-thumb {
+background: #2d6a4f;
+border-radius: 5px;
+}
+</style>
 </head>
 <body class="bg-eco-700 text-gray-100 font-sans antialiased overflow-x-hidden relative selection:bg-eco-accent selection:text-eco-700">
-
-    <div id="falling-container" class="absolute inset-0 overflow-hidden pointer-events-none z-0"></div>
-
-    <header class="sticky top-0 z-50 bg-eco-600/90 backdrop-blur-md border-b border-eco-500/30 transition-all duration-300">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
-            <div class="flex items-center space-x-3">
-                <div class="w-12 h-12 bg-eco-500 rounded-2xl flex items-center justify-center shadow-lg shadow-eco-500/20 text-2xl border border-eco-accent/40">
-                    💩
-                </div>
-                <div>
-                    <span class="block font-extrabold text-lg text-white tracking-tight">ЭКО-НАВОЗ.BY</span>
-                    <span class="block text-xs text-eco-accent font-medium">От производителя В. Крестовины</span>
-                </div>
-            </div>
-            
-            <nav class="hidden md:flex items-center space-x-8 text-sm font-semibold">
-                <a href="#about" class="text-gray-300 hover:text-eco-accent transition">О продукте</a>
-                <a href="#calculator" class="text-gray-300 hover:text-eco-accent transition">Калькулятор</a>
-                <a href="#supplier" class="text-gray-300 hover:text-eco-accent transition">Поставщик</a>
-                <a href="#advantages" class="text-gray-300 hover:text-eco-accent transition">Преимущества</a>
-                <a href="#contacts" class="text-gray-300 hover:text-eco-accent transition">Контакты</a>
-            </nav>
-
-            <div class="flex items-center space-x-4">
-                <a href="tel:+375299557050" class="hidden sm:flex items-center space-x-2 text-eco-accent font-bold hover:text-white transition bg-eco-500/20 px-4 py-2.5 rounded-xl border border-eco-accent/30">
-                    <i class="fa-solid fa-phone-volume animate-bounce"></i>
-                    <span>+375 (29) 955-70-50</span>
-                </a>
-                <a href="https://t.me/vlad_grishko" target="_blank" rel="noopener noreferrer" class="bg-eco-accent hover:bg-emerald-500 text-eco-700 font-bold px-5 py-2.5 rounded-xl shadow-lg shadow-eco-accent/20 transition transform active:scale-95 flex items-center space-x-2">
-                    <i class="fa-brands fa-telegram text-lg"></i>
-                    <span>Заказать</span>
-                </a>
-            </div>
-        </div>
-    </header>
-
-    <section class="relative z-10 pt-16 pb-24 md:pt-24 md:pb-32 overflow-hidden">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-                <div class="lg:col-span-7 space-y-6 text-center lg:text-left">
-                    <div class="inline-flex items-center space-x-2 bg-eco-500/30 border border-eco-accent/40 px-4 py-2 rounded-full text-eco-accent text-sm font-semibold backdrop-blur-sm">
-                        <span class="w-2.5 h-2.5 rounded-full bg-eco-accent animate-ping"></span>
-                        <span>Прямые поставки от производителя в Беларуси</span>
-                    </div>
-                    <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-white leading-tight">
-                        Премиальный <span class="text-transparent bg-clip-text bg-gradient-to-r from-eco-accent to-emerald-300">Конский Навоз</span> для Вашего Урожая
-                    </h1>
-                    <p class="text-lg text-gray-300 max-w-2xl mx-auto lg:mx-0 font-light">
-                        Экологически чистое органическое удобрение высшей категории. Улучшайте структуру почвы, повышайте плодородие и собирайте рекордные урожаи уже в этом сезоне! Доставка собственным транспортом.
-                    </p>
-                    <div class="flex flex-col sm:flex-row items-center justify-center lg:justify-start space-y-4 sm:space-y-0 sm:space-x-4 pt-4">
-                        <a href="#calculator" class="w-full sm:w-auto bg-eco-accent hover:bg-emerald-500 text-eco-700 font-extrabold px-8 py-4 rounded-2xl shadow-xl shadow-eco-accent/30 text-center transition transform hover:-translate-y-0.5">
-                            Рассчитать объем
-                        </a>
-                        <a href="https://t.me/vlad_grishko" target="_blank" rel="noopener noreferrer" class="w-full sm:w-auto bg-eco-600/60 hover:bg-eco-600 text-white border border-eco-500 font-bold px-8 py-4 rounded-2xl backdrop-blur-md text-center transition flex items-center justify-center space-x-2">
-                            <i class="fa-brands fa-telegram text-eco-accent text-xl"></i>
-                            <span>Написать в Telegram</span>
-                        </a>
-                    </div>
-                    
-                    <!-- Trust metrics -->
-                    <div class="grid grid-cols-3 gap-4 pt-8 border-t border-eco-600">
-                        <div>
-                            <p class="text-2xl sm:text-3xl font-extrabold text-white">100%</p>
-                            <p class="text-xs sm:text-sm text-gray-400">Чистый органический состав</p>
-                        </div>
-                        <div>
-                            <p class="text-2xl sm:text-3xl font-extrabold text-white">24/7</p>
-                            <p class="text-xs sm:text-sm text-gray-400">Консультации и прием заявок</p>
-                        </div>
-                        <div>
-                            <p class="text-2xl sm:text-3xl font-extrabold text-white">Быстро</p>
-                            <p class="text-xs sm:text-sm text-gray-400">Доставка по РБ</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="lg:col-span-5 relative flex justify-center">
-                    <div class="absolute -inset-4 bg-gradient-to-r from-eco-accent to-emerald-600 rounded-3xl blur-2xl opacity-30 animate-pulse"></div>
-                    <div class="relative bg-eco-600/80 border border-eco-500/50 p-6 rounded-3xl backdrop-blur-xl shadow-2xl max-w-sm w-full">
-                        <div class="relative h-80 rounded-2xl overflow-hidden shadow-inner group bg-eco-700 flex items-center justify-center">
-                            <!-- Supplier photo with direct Google Drive link and fallback -->
-                            <img src="https://lh3.googleusercontent.com/d/1U-rQK6yRs2ofl1pzP_B1RrFoWRaEG-uW" onerror="this.onerror=null; this.src='https://placehold.co/400x500/1b4332/52b788?text=Владислав+Крестовина';" alt="Владислав Крестовина - Поставщик" class="w-full h-full object-cover transform transition duration-500 group-hover:scale-105">
-                            <div class="absolute inset-0 bg-gradient-to-t from-eco-700/90 via-transparent to-transparent flex flex-col justify-end p-4">
-                                <span class="bg-eco-accent text-eco-700 text-xs font-bold px-2.5 py-1 rounded-full w-max mb-1">Глава хозяйства</span>
-                                <h3 class="text-lg font-bold text-white">Владислав Крестовина</h3>
-                                <p class="text-xs text-gray-300">Официальный производитель и поставщик</p>
-                            </div>
-                        </div>
-                        <div class="mt-4 pt-4 border-t border-eco-500/40 flex items-center justify-between">
-                            <div class="flex items-center space-x-2">
-                                <div class="w-3 h-3 bg-emerald-400 rounded-full animate-ping"></div>
-                                <span class="text-xs font-semibold text-emerald-300">Связь в Telegram</span>
-                            </div>
-                            <a href="https://t.me/vlad_grishko" target="_blank" rel="noopener noreferrer" class="text-eco-accent font-bold text-sm hover:underline flex items-center space-x-1">
-                                <span>@vlad_grishko</span>
-                                <i class="fa-solid fa-arrow-right text-xs"></i>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section id="calculator" class="relative z-10 py-20 bg-eco-600/40 border-y border-eco-500/30 backdrop-blur-md">
-        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center max-w-2xl mx-auto mb-12">
-                <span class="text-eco-accent text-sm font-bold tracking-wider uppercase bg-eco-500/20 px-3 py-1 rounded-full border border-eco-accent/30">Интерактивный инструмент</span>
-                <h2 class="text-3xl sm:text-4xl font-extrabold text-white mt-3">Калькулятор Навоза</h2>
-                <p class="text-gray-300 mt-2">Рассчитайте необходимый объем и ориентировочную стоимость для вашего участка.</p>
-            </div>
-
-            <div class="bg-eco-700/80 border border-eco-500/50 rounded-3xl p-6 sm:p-10 shadow-2xl backdrop-blur-xl">
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                    <!-- Calculator Controls -->
-                    <div class="space-y-6">
-                        <div>
-                            <label class="block text-sm font-semibold text-gray-200 mb-2">Тип фасовки / подачи:</label>
-                            <div class="grid grid-cols-2 gap-3">
-                                <button type="button" onclick="setPackaging('bags', this)" class="calc-btn active-pack py-3 px-4 rounded-xl border border-eco-accent bg-eco-500/30 font-semibold text-sm text-white transition flex items-center justify-center space-x-2">
-                                    <i class="fa-solid fa-sack-dollar"></i>
-                                    <span>В мешках (по 50 л)</span>
-                                </button>
-                                <button type="button" onclick="setPackaging('bulk', this)" class="calc-btn py-3 px-4 rounded-xl border border-eco-500/50 bg-eco-600/50 font-semibold text-sm text-gray-300 transition flex items-center justify-center space-x-2">
-                                    <i class="fa-solid fa-truck"></i>
-                                    <span>Россыпью (м³)</span>
-                                </button>
-                            </div>
-                        </div>
-
-                        <div>
-                            <div class="flex justify-between items-center mb-2">
-                                <label id="unit-label" class="text-sm font-semibold text-gray-200">Количество мешков:</label>
-                                <span id="amount-val" class="text-eco-accent font-bold text-lg bg-eco-500/20 px-3 py-0.5 rounded-lg border border-eco-accent/30">20 шт</span>
-                            </div>
-                            <input id="amount-slider" type="range" min="5" max="200" step="5" value="20" oninput="calculateManure()" class="w-full accent-eco-accent cursor-pointer bg-eco-600 h-2 rounded-lg">
-                            <div class="flex justify-between text-xs text-gray-400 mt-1">
-                                <span id="min-limit">5 шт</span>
-                                <span id="max-limit">200 шт</span>
-                            </div>
-                        </div>
-
-                        <div>
-                            <label class="block text-sm font-semibold text-gray-200 mb-2">Площадь участка (соток):</label>
-                            <input id="area-input" type="number" min="1" max="100" value="6" oninput="calculateManure()" class="w-full bg-eco-600/80 border border-eco-500/60 rounded-xl px-4 py-3 text-white font-semibold focus:outline-none focus:border-eco-accent transition">
-                        </div>
-                    </div>
-
-                    <!-- Calculator Results -->
-                    <div class="bg-eco-600/50 border border-eco-500/40 rounded-2xl p-6 flex flex-col justify-between space-y-6">
-                        <div>
-                            <h3 class="text-lg font-bold text-white border-b border-eco-500/40 pb-3 flex items-center justify-between">
-                                <span>Расчет заказа</span>
-                                <i class="fa-solid fa-receipt text-eco-accent"></i>
-                            </h3>
-                            <ul class="space-y-4 pt-4 text-sm">
-                                <li class="flex justify-between">
-                                    <span class="text-gray-300">Общий объем:</span>
-                                    <span id="res-volume" class="font-bold text-white">1.0 м³ (1000 литров)</span>
-                                </li>
-                                <li class="flex justify-between">
-                                    <span class="text-gray-300">Рекомендуется на площадь:</span>
-                                    <span id="res-area" class="font-bold text-white">до 6 соток</span>
-                                </li>
-                                <li class="flex justify-between">
-                                    <span class="text-gray-300">Тип поставки:</span>
-                                    <span id="res-type" class="font-bold text-eco-accent">В мешках с доставкой</span>
-                                </li>
-                            </ul>
-                        </div>
-
-                        <div class="bg-eco-700/80 p-4 rounded-xl border border-eco-accent/30">
-                            <div class="flex justify-between items-center mb-1">
-                                <span class="text-xs text-gray-400 uppercase tracking-wider font-semibold">Ориентировочная стоимость</span>
-                                <span class="text-xs text-emerald-400 font-bold">Скидка за объем</span>
-                            </div>
-                            <div class="flex items-baseline justify-between">
-                                <span id="res-price" class="text-3xl sm:text-4xl font-extrabold text-white">120 BYN</span>
-                                <span class="text-xs text-gray-300">*цена с учетом самовывоза/доставки уточняется</span>
-                            </div>
-                        </div>
-
-                        <a id="calc-order-btn" href="https://t.me/vlad_grishko" target="_blank" rel="noopener noreferrer" class="w-full bg-eco-accent hover:bg-emerald-500 text-eco-700 font-extrabold py-4 rounded-xl shadow-lg shadow-eco-accent/20 transition transform active:scale-95 text-center flex items-center justify-center space-x-2">
-                            <i class="fa-brands fa-telegram text-xl"></i>
-                            <span>Заказать в Telegram</span>
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section id="supplier" class="relative z-10 py-20">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-                <div class="space-y-6">
-                    <span class="text-eco-accent text-sm font-bold tracking-wider uppercase bg-eco-500/20 px-3 py-1 rounded-full border border-eco-accent/30">О производителе</span>
-                    <h2 class="text-3xl sm:text-4xl font-extrabold text-white">Владислав Крестовина — гарантия качества и чистоты</h2>
-                    <p class="text-gray-300 leading-relaxed font-light">
-                        Я лично контролирую весь процесс заготовки и выдержки конского навоза. Наше подсобное хозяйство находится в экологически чистом районе. Конский навоз по праву считается «горячим» и лучшим удобрением для овощных культур, теплиц, плодовых деревьев и цветов.
-                    </p>
-                    <div class="space-y-4">
-                        <div class="flex items-start space-x-4 bg-eco-600/40 border border-eco-500/30 p-4 rounded-2xl">
-                            <div class="w-10 h-10 rounded-xl bg-eco-accent/20 flex items-center justify-center text-eco-accent flex-shrink-0 text-lg">
-                                <i class="fa-solid fa-seedling"></i>
-                            </div>
-                            <div>
-                                <h4 class="font-bold text-white">Максимальная польза для почвы</h4>
-                                <p class="text-sm text-gray-300 mt-1">Быстро разлагается, насыщает грунт азотом, фосфором, калием и полезной микрофлорой.</p>
-                            </div>
-                        </div>
-                        <div class="flex items-start space-x-4 bg-eco-600/40 border border-eco-500/30 p-4 rounded-2xl">
-                            <div class="w-10 h-10 rounded-xl bg-eco-accent/20 flex items-center justify-center text-eco-accent flex-shrink-0 text-lg">
-                                <i class="fa-solid fa-shield-halved"></i>
-                            </div>
-                            <div>
-                                <h4 class="font-bold text-white">Без сорняков и химии</h4>
-                                <p class="text-sm text-gray-300 mt-1">Чистый натуральный продукт естественной выдержки. Никаких вредных примесей.</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="relative flex justify-center">
-                    <div class="w-full max-w-md bg-eco-600/60 border border-eco-500/50 rounded-3xl p-6 backdrop-blur-xl shadow-xl">
-                        <h3 class="text-xl font-bold text-white mb-6 flex items-center justify-between">
-                            <span>Контакты поставщика</span>
-                            <span class="w-3 h-3 bg-emerald-400 rounded-full"></span>
-                        </h3>
-                        <div class="space-y-4">
-                            <a href="https://t.me/vlad_grishko" target="_blank" rel="noopener noreferrer" class="flex items-center space-x-4 p-4 rounded-2xl bg-eco-700/80 border border-eco-500/40 hover:border-eco-accent transition group">
-                                <div class="w-12 h-12 rounded-xl bg-eco-accent text-eco-700 flex items-center justify-center text-2xl font-bold group-hover:scale-105 transition">
-                                    <i class="fa-brands fa-telegram"></i>
-                                </div>
-                                <div>
-                                    <span class="block text-xs text-gray-400">Telegram чат</span>
-                                    <span class="block text-lg font-extrabold text-white group-hover:text-eco-accent transition">@vlad_grishko</span>
-                                </div>
-                            </a>
-
-                            <a href="tel:+375299557050" class="flex items-center space-x-4 p-4 rounded-2xl bg-eco-700/80 border border-eco-500/40 hover:border-eco-accent transition group">
-                                <div class="w-12 h-12 rounded-xl bg-eco-accent text-eco-700 flex items-center justify-center text-xl font-bold group-hover:scale-105 transition">
-                                    <i class="fa-solid fa-phone"></i>
-                                </div>
-                                <div>
-                                    <span class="block text-xs text-gray-400">Телефон / Viber</span>
-                                    <span class="block text-lg font-extrabold text-white group-hover:text-eco-accent transition">+375 (29) 955-70-50</span>
-                                </div>
-                            </a>
-
-                            <div class="flex items-center space-x-4 p-4 rounded-2xl bg-eco-700/80 border border-eco-500/40">
-                                <div class="w-12 h-12 rounded-xl bg-emerald-500/20 text-eco-accent flex items-center justify-center text-xl font-bold">
-                                    <i class="fa-solid fa-user-tie"></i>
-                                </div>
-                                <div>
-                                    <span class="block text-xs text-gray-400">Ответственное лицо</span>
-                                    <span class="block text-base font-bold text-white">Владислав Крестовина</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section id="advantages" class="relative z-10 py-20 bg-eco-600/30 border-t border-eco-500/30 backdrop-blur-md">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center max-w-2xl mx-auto mb-16">
-                <span class="text-eco-accent text-sm font-bold tracking-wider uppercase bg-eco-500/20 px-3 py-1 rounded-full border border-eco-accent/30">Почему выбирают нас</span>
-                <h2 class="text-3xl sm:text-4xl font-extrabold text-white mt-3">Преимущества конского навоза</h2>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div class="bg-eco-700/80 border border-eco-500/40 p-8 rounded-3xl shadow-xl transition hover:-translate-y-1">
-                    <div class="w-14 h-14 bg-eco-accent/20 border border-eco-accent/40 rounded-2xl flex items-center justify-center text-eco-accent text-2xl mb-6">
-                        <i class="fa-solid fa-fire-flame-curved"></i>
-                    </div>
-                    <h3 class="text-xl font-bold text-white mb-3">Высокая теплоотдача</h3>
-                    <p class="text-gray-300 text-sm leading-relaxed">
-                        Быстро разогревается и долго удерживает тепло. Идеально подходит для заправки парников и ранних теплиц.
-                    </p>
-                </div>
-
-                <div class="bg-eco-700/80 border border-eco-500/40 p-8 rounded-3xl shadow-xl transition hover:-translate-y-1">
-                    <div class="w-14 h-14 bg-eco-accent/20 border border-eco-accent/40 rounded-2xl flex items-center justify-center text-eco-accent text-2xl mb-6">
-                        <i class="fa-solid fa-carrot"></i>
-                    </div>
-                    <h3 class="text-xl font-bold text-white mb-3">Идеально для корнеплодов</h3>
-                    <p class="text-gray-300 text-sm leading-relaxed">
-                        Картофель, морковь, свекла и тыквенные культуры дают потрясающий урожай на конском удобрении без лишней нитратной нагрузки.
-                    </p>
-                </div>
-
-                <div class="bg-eco-700/80 border border-eco-500/40 p-8 rounded-3xl shadow-xl transition hover:-translate-y-1">
-                    <div class="w-14 h-14 bg-eco-accent/20 border border-eco-accent/40 rounded-2xl flex items-center justify-center text-eco-accent text-2xl mb-6">
-                        <i class="fa-solid fa-hand-holding-dollar"></i>
-                    </div>
-                    <h3 class="text-xl font-bold text-white mb-3">Доступные цены и скидки</h3>
-                    <p class="text-gray-300 text-sm leading-relaxed">
-                        Прямые продажи от производителя без посредников. Гибкие условия при заказе крупных оптовых партий.
-                    </p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <footer id="contacts" class="relative z-10 bg-eco-700 border-t border-eco-500/40 pt-16 pb-12">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
-                <div class="space-y-4 md:col-span-2">
-                    <div class="flex items-center space-x-3">
-                        <div class="w-10 h-10 bg-eco-500 rounded-xl flex items-center justify-center text-xl border border-eco-accent/40">
-                            💩
-                        </div>
-                        <span class="font-extrabold text-lg text-white">ЭКО-НАВОЗ.BY</span>
-                    </div>
-                    <p class="text-sm text-gray-400 max-w-sm">
-                        Надежный поставщик органических удобрений высшего качества. Индивидуальный подход к каждому дачнику и фермерскому хозяйству.
-                    </p>
-                </div>
-
-                <div>
-                    <h4 class="font-bold text-white mb-4">Навигация</h4>
-                    <ul class="space-y-2 text-sm text-gray-400">
-                        <li><a href="#about" class="hover:text-eco-accent transition">О продукте</a></li>
-                        <li><a href="#calculator" class="hover:text-eco-accent transition">Калькулятор</a></li>
-                        <li><a href="#supplier" class="hover:text-eco-accent transition">Поставщик</a></li>
-                        <li><a href="#advantages" class="hover:text-eco-accent transition">Преимущества</a></li>
-                    </ul>
-                </div>
-
-                <div>
-                    <h4 class="font-bold text-white mb-4">Контакты</h4>
-                    <ul class="space-y-3 text-sm text-gray-300">
-                        <li>
-                            <span class="block text-xs text-gray-400">Поставщик:</span>
-                            <strong class="text-white">Владислав Крестовина</strong>
-                        </li>
-                        <li>
-                            <span class="block text-xs text-gray-400">Telegram:</span>
-                            <a href="https://t.me/vlad_grishko" target="_blank" rel="noopener noreferrer" class="text-eco-accent font-bold hover:underline">@vlad_grishko</a>
-                        </li>
-                        <li>
-                            <span class="block text-xs text-gray-400">Телефон:</span>
-                            <a href="tel:+375299557050" class="text-eco-accent font-bold hover:underline">+375 (29) 955-70-50</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-
-            <div class="pt-8 border-t border-eco-600 flex flex-col sm:flex-row items-center justify-between text-xs text-gray-400">
-                <p>&copy; 2026 Эко-Навоз. Все права защищены. Владислав Крестовина (+375299557050).</p>
-                <div class="flex space-x-4 mt-4 sm:mt-0">
-                    <a href="https://t.me/vlad_grishko" target="_blank" rel="noopener noreferrer" class="text-eco-accent hover:underline flex items-center space-x-1">
-                        <i class="fa-brands fa-telegram"></i>
-                        <span>Связаться в Telegram</span>
-                    </a>
-                </div>
-            </div>
-        </div>
-    </footer>
-
-    <script>
-        // Falling stickers animation generator (Poop emojis, plants, leaves)
-        const emojis = ['💩', '🌱', '🌿', '💩', '🌿'];
-        const container = document.getElementById('falling-container');
-        const stickerCount = 18;
-
-        for (let i = 0; i < stickerCount; i++) {
-            const sticker = document.createElement('div');
-            sticker.className = 'falling-sticker';
-            sticker.innerText = emojis[Math.floor(Math.random() * emojis.length)];
-            
-            // Random positioning, sizing and animation speeds
-            const randomX = Math.random() * 100;
-            const randomDuration = 7 + Math.random() * 12; // 7 to 19 seconds
-            const randomDelay = Math.random() * 10;
-            const randomSize = 1.2 + Math.random() * 1.8; // rem
-
-            sticker.style.left = `${randomX}vw`;
-            sticker.style.animationDuration = `${randomDuration}s`;
-            sticker.style.animationDelay = `-${randomDelay}s`;
-            sticker.style.fontSize = `${randomSize}rem`;
-
-            container.appendChild(sticker);
-        }
-
-        // Calculator state
-        let packagingType = 'bags'; // 'bags' or 'bulk'
-
-        function setPackaging(type, btnElement) {
-            packagingType = type;
-            document.querySelectorAll('.calc-btn').forEach(b => {
-                b.classList.remove('active-pack', 'border-eco-accent', 'bg-eco-500/30');
-                b.classList.add('border-eco-500/50', 'bg-eco-600/50', 'text-gray-300');
-            });
-            btnElement.classList.add('active-pack', 'border-eco-accent', 'bg-eco-500/30');
-            btnElement.classList.remove('border-eco-500/50', 'bg-eco-600/50', 'text-gray-300');
-
-            const slider = document.getElementById('amount-slider');
-            const unitLabel = document.getElementById('unit-label');
-            const minLimit = document.getElementById('min-limit');
-            const maxLimit = document.getElementById('max-limit');
-
-            if (type === 'bags') {
-                unitLabel.innerText = 'Количество мешков:';
-                slider.min = 5;
-                slider.max = 200;
-                slider.step = 5;
-                slider.value = 20;
-                minLimit.innerText = '5 шт';
-                maxLimit.innerText = '200 шт';
-            } else {
-                unitLabel.innerText = 'Объем россыпью (м³):';
-                slider.min = 1;
-                slider.max = 30;
-                slider.step = 1;
-                slider.value = 5;
-                minLimit.innerText = '1 м³';
-                maxLimit.innerText = '30 м³';
-            }
-            calculateManure();
-        }
-
-        function calculateManure() {
-            const val = parseInt(document.getElementById('amount-slider').value);
-            const areaInput = document.getElementById('area-input');
-            document.getElementById('amount-val').innerText = packagingType === 'bags' ? `${val} шт` : `${val} м³`;
-
-            let volumeM3 = 0;
-            let price = 0;
-            let recommendedArea = '';
-            let typeText = '';
-
-            if (packagingType === 'bags') {
-                volumeM3 = (val * 0.05).toFixed(1);
-                price = val * 6; // 6 BYN per bag
-                recommendedArea = `до ${(val * 0.3).toFixed(1)} соток`;
-                typeText = 'В мешках по 50 л';
-            } else {
-                volumeM3 = val;
-                price = val * 100; // 100 BYN per m3 bulk
-                recommendedArea = `до ${val * 6} соток`;
-                typeText = 'Россыпью (машина)';
-            }
-
-            document.getElementById('res-volume').innerText = `${volumeM3} м³ (${packagingType === 'bags' ? val * 50 : val * 1000} литров)`;
-            document.getElementById('res-area').innerText = recommendedArea;
-            document.getElementById('res-type').innerText = typeText;
-            document.getElementById('res-price').innerText = `${price} BYN`;
-            areaInput.value = Math.max(1, Math.round(parseFloat(volumeM3) * 5));
-
-            // Update Telegram order button with calculated parameters
-            const orderBtn = document.getElementById('calc-order-btn');
-            const message = encodeURIComponent(`Здравствуйте, Владислав! Хочу заказать конский навоз: ${typeText}, объем ${volumeM3} м³ (${packagingType === 'bags' ? val + ' мешков' : val + ' м³'}), ориентировочная стоимость ${price} BYN.`);
-            orderBtn.href = `https://t.me/vlad_grishko?text=${message}`;
-        }
-
-        // Initialize calculator on load
-        calculateManure();
-    </script>
+​<div id="falling-container" class="absolute inset-0 overflow-hidden pointer-events-none z-0"></div>
+​<header class="sticky top-0 z-50 bg-eco-600/90 backdrop-blur-md border-b border-eco-500/30 transition-all duration-300">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+<div class="flex items-center space-x-3">
+<div class="w-12 h-12 bg-eco-500 rounded-2xl flex items-center justify-center shadow-lg shadow-eco-500/20 text-2xl border border-eco-accent/40">
+💩
+</div>
+<div>
+<span class="block font-extrabold text-lg text-white tracking-tight">ЭКО-НАВОЗ.BY</span>
+<span class="block text-xs text-eco-accent font-medium">От производителя В. Крестовины</span>
+</div>
+</div>
+​<nav class="hidden md:flex items-center space-x-8 text-sm font-semibold">
+<a href="#about" class="text-gray-300 hover:text-eco-accent transition">О продукте</a>
+<a href="#producer-horse" class="text-gray-300 hover:text-eco-accent transition">Производитель (Конь)</a>
+<a href="#calculator" class="text-gray-300 hover:text-eco-accent transition">Калькулятор</a>
+<a href="#supplier" class="text-gray-300 hover:text-eco-accent transition">Поставщик</a>
+<a href="#advantages" class="text-gray-300 hover:text-eco-accent transition">Преимущества</a>
+</nav>
+​<div class="flex items-center space-x-4">
+<a href="tel:+375299557050" class="hidden sm:flex items-center space-x-2 text-eco-accent font-bold hover:text-white transition bg-eco-500/20 px-4 py-2.5 rounded-xl border border-eco-accent/30">
+<i class="fa-solid fa-phone-volume animate-bounce"></i>
+<span>+375 (29) 955-70-50</span>
+</a>
+<a href="https://t.me/vlad_grishko" target="_blank" rel="noopener noreferrer" class="bg-eco-accent hover:bg-emerald-500 text-eco-700 font-bold px-5 py-2.5 rounded-xl shadow-lg shadow-eco-accent/20 transition transform active:scale-95 flex items-center space-x-2">
+<i class="fa-brands fa-telegram text-lg"></i>
+<span>Заказать</span>
+</a>
+</div>
+</div>
+</header>
+​<section class="relative z-10 pt-16 pb-24 md:pt-24 md:pb-32 overflow-hidden">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+<div class="lg:col-span-7 space-y-6 text-center lg:text-left">
+<div class="inline-flex items-center space-x-2 bg-eco-500/30 border border-eco-accent/40 px-4 py-2 rounded-full text-eco-accent text-sm font-semibold backdrop-blur-sm">
+<span class="w-2.5 h-2.5 rounded-full bg-eco-accent animate-ping"></span>
+<span>Прямые поставки от производителя в Беларуси</span>
+</div>
+<h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-white leading-tight">
+Премиальный <span class="text-transparent bg-clip-text bg-gradient-to-r from-eco-accent to-emerald-300">Конский Навоз</span> для Вашего Урожая
+</h1>
+<p class="text-lg text-gray-300 max-w-2xl mx-auto lg:mx-0 font-light">
+Экологически чистое органическое удобрение высшей категории. Улучшайте структуру почвы, повышайте плодородие и собирайте рекордные урожаи уже в этом сезоне! Доставка собственным транспортом.
+</p>
+<div class="flex flex-col sm:flex-row items-center justify-center lg:justify-start space-y-4 sm:space-y-0 sm:space-x-4 pt-4">
+<a href="#calculator" class="w-full sm:w-auto bg-eco-accent hover:bg-emerald-500 text-eco-700 font-extrabold px-8 py-4 rounded-2xl shadow-xl shadow-eco-accent/30 text-center transition transform hover:-translate-y-0.5">
+Рассчитать объем
+</a>
+<a href="https://t.me/vlad_grishko" target="_blank" rel="noopener noreferrer" class="w-full sm:w-auto bg-eco-600/60 hover:bg-eco-600 text-white border border-eco-500 font-bold px-8 py-4 rounded-2xl backdrop-blur-md text-center transition flex items-center justify-center space-x-2">
+<i class="fa-brands fa-telegram text-eco-accent text-xl"></i>
+<span>Написать в Telegram</span>
+</a>
+</div>
+​<!-- Trust metrics -->
+<div class="grid grid-cols-3 gap-4 pt-8 border-t border-eco-600">
+<div>
+<p class="text-2xl sm:text-3xl font-extrabold text-white">100%</p>
+<p class="text-xs sm:text-sm text-gray-400">Чистый органический состав</p>
+</div>
+<div>
+<p class="text-2xl sm:text-3xl font-extrabold text-white">24/7</p>
+<p class="text-xs sm:text-sm text-gray-400">Консультации и прием заявок</p>
+</div>
+<div>
+<p class="text-2xl sm:text-3xl font-extrabold text-white">Быстро</p>
+<p class="text-xs sm:text-sm text-gray-400">Доставка по РБ</p>
+</div>
+</div>
+</div>
+​<div class="lg:col-span-5 relative flex justify-center">
+<div class="absolute -inset-4 bg-gradient-to-r from-eco-accent to-emerald-600 rounded-3xl blur-2xl opacity-30 animate-pulse"></div>
+<div class="relative bg-eco-600/80 border border-eco-500/50 p-6 rounded-3xl backdrop-blur-xl shadow-2xl max-w-sm w-full">
+<div class="relative h-80 rounded-2xl overflow-hidden shadow-inner group bg-eco-700 flex items-center justify-center">
+<!-- Supplier photo with fallback -->
+<img src="https://lh3.googleusercontent.com/d/1U-rQK6yRs2ofl1pzP_B1RrFoWRaEG-uW" onerror="this.onerror=null; this.src='https://placehold.co/400x500/1b4332/52b788?text=Владислав+Крестовина';" alt="Владислав Крестовина - Поставщик" class="w-full h-full object-cover transform transition duration-500 group-hover:scale-105">
+<div class="absolute inset-0 bg-gradient-to-t from-eco-700/90 via-transparent to-transparent flex flex-col justify-end p-4">
+<span class="bg-eco-accent text-eco-700 text-xs font-bold px-2.5 py-1 rounded-full w-max mb-1">Глава хозяйства</span>
+<h3 class="text-lg font-bold text-white">Владислав Крестовина</h3>
+<p class="text-xs text-gray-300">Официальный производитель и поставщик</p>
+</div>
+</div>
+<div class="mt-4 pt-4 border-t border-eco-500/40 flex items-center justify-between">
+<div class="flex items-center space-x-2">
+<div class="w-3 h-3 bg-emerald-400 rounded-full animate-ping"></div>
+<span class="text-xs font-semibold text-emerald-300">Связь в Telegram</span>
+</div>
+<a href="https://t.me/vlad_grishko" target="_blank" rel="noopener noreferrer" class="text-eco-accent font-bold text-sm hover:underline flex items-center space-x-1">
+<span>@vlad_grishko</span>
+<i class="fa-solid fa-arrow-right text-xs"></i>
+</a>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+​<!-- NEW SECTION: PRODUCER HORSE -->
+<section id="producer-horse" class="relative z-10 py-20 bg-eco-600/30 border-y border-eco-500/30 backdrop-blur-md">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+<div class="lg:col-span-5 relative flex justify-center">
+<div class="absolute -inset-4 bg-gradient-to-r from-eco-accent to-emerald-600 rounded-3xl blur-2xl opacity-30 animate-pulse"></div>
+<div class="relative bg-eco-600/90 border border-eco-500/50 p-6 rounded-3xl backdrop-blur-xl shadow-2xl max-w-md w-full">
+<div class="relative h-96 rounded-2xl overflow-hidden shadow-inner group bg-eco-700 flex items-center justify-center">
+<!-- Horse photo requested by user -->
+<img src="https://drive.google.com/uc?export=view&id=1maD9oZNZ1Piuhb6YZq_ub8rtOTivUy2V" onerror="this.onerror=null; this.src='https://placehold.co/500x600/1b4332/52b788?text=Главный+Производитель';" alt="Конь-производитель навоза" class="w-full h-full object-cover transform transition duration-500 group-hover:scale-105">
+<div class="absolute inset-0 bg-gradient-to-t from-eco-700/90 via-transparent to-transparent flex flex-col justify-end p-4">
+<span class="bg-eco-gold text-eco-700 text-xs font-bold px-2.5 py-1 rounded-full w-max mb-1">Главный цех производства</span>
+<h3 class="text-xl font-bold text-white">Трудяга-производитель</h3>
+<p class="text-xs text-gray-300">Работает без перерывов и выходных</p>
+</div>
+</div>
+</div>
+</div>
+​<div class="lg:col-span-7 space-y-6">
+<span class="text-eco-accent text-sm font-bold tracking-wider uppercase bg-eco-500/20 px-3 py-1 rounded-full border border-eco-accent/30">Источник сырья</span>
+<h2 class="text-3xl sm:text-4xl font-extrabold text-white">Знакомьтесь: Лицо (и не только) нашего производства</h2>
+<p class="text-gray-300 leading-relaxed font-light">
+За каждым мешком премиального удобрения стоит упорный труд нашего главного сотрудника. Никакой химии — только натуральное питание, свежий воздух и непрерывный производственный процесс на благо вашего урожая.
+</p>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+<div class="bg-eco-700/80 border border-eco-500/40 p-4 rounded-2xl">
+<h4 class="font-bold text-white flex items-center space-x-2">
+<i class="fa-solid fa-medal text-eco-accent"></i>
+<span>Высокий КПД</span>
+</h4>
+<p class="text-xs text-gray-300 mt-1">Производит экологически чистый продукт высшей категории круглосуточно.</p>
+</div>
+<div class="bg-eco-700/80 border border-eco-500/40 p-4 rounded-2xl">
+<h4 class="font-bold text-white flex items-center space-x-2">
+<i class="fa-solid fa-carrot text-eco-accent"></i>
+<span>Премиум-рацион</span>
+</h4>
+<p class="text-xs text-gray-300 mt-1">Питается только отборным сеном и овсом для идеальной консистенции и полезности.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+​<section id="calculator" class="relative z-10 py-20 bg-eco-600/40 border-y border-eco-500/30 backdrop-blur-md">
+<div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="text-center max-w-2xl mx-auto mb-12">
+<span class="text-eco-accent text-sm font-bold tracking-wider uppercase bg-eco-500/20 px-3 py-1 rounded-full border border-eco-accent/30">Интерактивный инструмент</span>
+<h2 class="text-3xl sm:text-4xl font-extrabold text-white mt-3">Калькулятор Навоза</h2>
+<p class="text-gray-300 mt-2">Рассчитайте необходимый объем и ориентировочную стоимость для вашего участка.</p>
+</div>
+​<div class="bg-eco-700/80 border border-eco-500/50 rounded-3xl p-6 sm:p-10 shadow-2xl backdrop-blur-xl">
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+<!-- Calculator Controls -->
+<div class="space-y-6">
+<div>
+<label class="block text-sm font-semibold text-gray-200 mb-2">Тип фасовки / подачи:</label>
+<div class="grid grid-cols-2 gap-3">
+<button type="button" onclick="setPackaging('bags', this)" class="calc-btn active-pack py-3 px-4 rounded-xl border border-eco-accent bg-eco-500/30 font-semibold text-sm text-white transition flex items-center justify-center space-x-2">
+<i class="fa-solid fa-sack-dollar"></i>
+<span>В мешках (по 50 л)</span>
+</button>
+<button type="button" onclick="setPackaging('bulk', this)" class="calc-btn py-3 px-4 rounded-xl border border-eco-500/50 bg-eco-600/50 font-semibold text-sm text-gray-300 transition flex items-center justify-center space-x-2">
+<i class="fa-solid fa-truck"></i>
+<span>Россыпью (м³)</span>
+</button>
+</div>
+</div>
+​<div>
+<div class="flex justify-between items-center mb-2">
+<label id="unit-label" class="text-sm font-semibold text-gray-200">Количество мешков:</label>
+<span id="amount-val" class="text-eco-accent font-bold text-lg bg-eco-500/20 px-3 py-0.5 rounded-lg border border-eco-accent/30">20 шт</span>
+</div>
+<input id="amount-slider" type="range" min="5" max="200" step="5" value="20" oninput="calculateManure()" class="w-full accent-eco-accent cursor-pointer bg-eco-600 h-2 rounded-lg">
+<div class="flex justify-between text-xs text-gray-400 mt-1">
+<span id="min-limit">5 шт</span>
+<span id="max-limit">200 шт</span>
+</div>
+</div>
+​<div>
+<label class="block text-sm font-semibold text-gray-200 mb-2">Площадь участка (соток):</label>
+<input id="area-input" type="number" min="1" max="100" value="6" oninput="calculateManure()" class="w-full bg-eco-600/80 border border-eco-500/60 rounded-xl px-4 py-3 text-white font-semibold focus:outline-none focus:border-eco-accent transition">
+</div>
+</div>
+​<!-- Calculator Results -->
+<div class="bg-eco-600/50 border border-eco-500/40 rounded-2xl p-6 flex flex-col justify-between space-y-6">
+<div>
+<h3 class="text-lg font-bold text-white border-b border-eco-500/40 pb-3 flex items-center justify-between">
+<span>Расчет заказа</span>
+<i class="fa-solid fa-receipt text-eco-accent"></i>
+</h3>
+<ul class="space-y-4 pt-4 text-sm">
+<li class="flex justify-between">
+<span class="text-gray-300">Общий объем:</span>
+<span id="res-volume" class="font-bold text-white">1.0 м³ (1000 литров)</span>
+</li>
+<li class="flex justify-between">
+<span class="text-gray-300">Рекомендуется на площадь:</span>
+<span id="res-area" class="font-bold text-white">до 6 соток</span>
+</li>
+<li class="flex justify-between">
+<span class="text-gray-300">Тип поставки:</span>
+<span id="res-type" class="font-bold text-eco-accent">В мешках с доставкой</span>
+</li>
+</ul>
+</div>
+​<div class="bg-eco-700/80 p-4 rounded-xl border border-eco-accent/30">
+<div class="flex justify-between items-center mb-1">
+<span class="text-xs text-gray-400 uppercase tracking-wider font-semibold">Ориентировочная стоимость</span>
+<span class="text-xs text-emerald-400 font-bold">Скидка за объем</span>
+</div>
+<div class="flex items-baseline justify-between">
+<span id="res-price" class="text-3xl sm:text-4xl font-extrabold text-white">120 BYN</span>
+<span class="text-xs text-gray-300">*цена с учетом самовывоза/доставки уточняется</span>
+</div>
+</div>
+​<a id="calc-order-btn" href="https://t.me/vlad_grishko" target="_blank" rel="noopener noreferrer" class="w-full bg-eco-accent hover:bg-emerald-500 text-eco-700 font-extrabold py-4 rounded-xl shadow-lg shadow-eco-accent/20 transition transform active:scale-95 text-center flex items-center justify-center space-x-2">
+<i class="fa-brands fa-telegram text-xl"></i>
+<span>Заказать в Telegram</span>
+</a>
+</div>
+</div>
+</div>
+</div>
+</section>
+​<section id="supplier" class="relative z-10 py-20">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+<div class="space-y-6">
+<span class="text-eco-accent text-sm font-bold tracking-wider uppercase bg-eco-500/20 px-3 py-1 rounded-full border border-eco-accent/30">О производителе</span>
+<h2 class="text-3xl sm:text-4xl font-extrabold text-white">Владислав Крестовина — гарантия качества и чистоты</h2>
+<p class="text-gray-300 leading-relaxed font-light">
+Я лично контролирую весь процесс заготовки и выдержки конского навоза. Наше подсобное хозяйство находится в экологически чистом районе. Конский навоз по праву считается «горячим» и лучшим удобрением для овощных культур, теплиц, плодовых деревьев и цветов.
+</p>
+<div class="space-y-4">
+<div class="flex items-start space-x-4 bg-eco-600/40 border border-eco-500/30 p-4 rounded-2xl">
+<div class="w-10 h-10 rounded-xl bg-eco-accent/20 flex items-center justify-center text-eco-accent flex-shrink-0 text-lg">
+<i class="fa-solid fa-seedling"></i>
+</div>
+<div>
+<h4 class="font-bold text-white">Максимальная польза для почвы</h4>
+<p class="text-sm text-gray-300 mt-1">Быстро разлагается, насыщает грунт азотом, фосфором, калием и полезной микрофлорой.</p>
+</div>
+</div>
+<div class="flex items-start space-x-4 bg-eco-600/40 border border-eco-500/30 p-4 rounded-2xl">
+<div class="w-10 h-10 rounded-xl bg-eco-accent/20 flex items-center justify-center text-eco-accent flex-shrink-0 text-lg">
+<i class="fa-solid fa-shield-halved"></i>
+</div>
+<div>
+<h4 class="font-bold text-white">Без сорняков и химии</h4>
+<p class="text-sm text-gray-300 mt-1">Чистый натуральный продукт естественной выдержки. Никаких вредных примесей.</p>
+</div>
+</div>
+</div>
+</div>
+​<div class="relative flex justify-center">
+<div class="w-full max-w-md bg-eco-600/60 border border-eco-500/50 rounded-3xl p-6 backdrop-blur-xl shadow-xl">
+<h3 class="text-xl font-bold text-white mb-6 flex items-center justify-between">
+<span>Контакты поставщика</span>
+<span class="w-3 h-3 bg-emerald-400 rounded-full"></span>
+</h3>
+<div class="space-y-4">
+<a href="https://t.me/vlad_grishko" target="_blank" rel="noopener noreferrer" class="flex items-center space-x-4 p-4 rounded-2xl bg-eco-700/80 border border-eco-500/40 hover:border-eco-accent transition group">
+<div class="w-12 h-12 rounded-xl bg-eco-accent text-eco-700 flex items-center justify-center text-2xl font-bold group-hover:scale-105 transition">
+<i class="fa-brands fa-telegram"></i>
+</div>
+<div>
+<span class="block text-xs text-gray-400">Telegram чат</span>
+<span class="block text-lg font-extrabold text-white group-hover:text-eco-accent transition">@vlad_grishko</span>
+</div>
+</a>
+​<a href="tel:+375299557050" class="flex items-center space-x-4 p-4 rounded-2xl bg-eco-700/80 border border-eco-500/40 hover:border-eco-accent transition group">
+<div class="w-12 h-12 rounded-xl bg-eco-accent text-eco-700 flex items-center justify-center text-xl font-bold group-hover:scale-105 transition">
+<i class="fa-solid fa-phone"></i>
+</div>
+<div>
+<span class="block text-xs text-gray-400">Телефон / Viber</span>
+<span class="block text-lg font-extrabold text-white group-hover:text-eco-accent transition">+375 (29) 955-70-50</span>
+</div>
+</a>
+​<div class="flex items-center space-x-4 p-4 rounded-2xl bg-eco-700/80 border border-eco-500/40">
+<div class="w-12 h-12 rounded-xl bg-emerald-500/20 text-eco-accent flex items-center justify-center text-xl font-bold">
+<i class="fa-solid fa-user-tie"></i>
+</div>
+<div>
+<span class="block text-xs text-gray-400">Ответственное лицо</span>
+<span class="block text-base font-bold text-white">Владислав Крестовина</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+​<section id="advantages" class="relative z-10 py-20 bg-eco-600/30 border-t border-eco-500/30 backdrop-blur-md">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="text-center max-w-2xl mx-auto mb-16">
+<span class="text-eco-accent text-sm font-bold tracking-wider uppercase bg-eco-500/20 px-3 py-1 rounded-full border border-eco-accent/30">Почему выбирают нас</span>
+<h2 class="text-3xl sm:text-4xl font-extrabold text-white mt-3">Преимущества конского навоза</h2>
+</div>
+​<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+<div class="bg-eco-700/80 border border-eco-500/40 p-8 rounded-3xl shadow-xl transition hover:-translate-y-1">
+<div class="w-14 h-14 bg-eco-accent/20 border border-eco-accent/40 rounded-2xl flex items-center justify-center text-eco-accent text-2xl mb-6">
+<i class="fa-solid fa-fire-flame-curved"></i>
+</div>
+<h3 class="text-xl font-bold text-white mb-3">Высокая теплоотдача</h3>
+<p class="text-gray-300 text-sm leading-relaxed">
+Быстро разогревается и долго удерживает тепло. Идеально подходит для заправки парников и ранних теплиц.
+</p>
+</div>
+​<div class="bg-eco-700/80 border border-eco-500/40 p-8 rounded-3xl shadow-xl transition hover:-translate-y-1">
+<div class="w-14 h-14 bg-eco-accent/20 border border-eco-accent/40 rounded-2xl flex items-center justify-center text-eco-accent text-2xl mb-6">
+<i class="fa-solid fa-carrot"></i>
+</div>
+<h3 class="text-xl font-bold text-white mb-3">Идеально для корнеплодов</h3>
+<p class="text-gray-300 text-sm leading-relaxed">
+Картофель, морковь, свекла и тыквенные культуры дают потрясающий урожай на конском удобрении без лишней нитратной нагрузки.
+</p>
+</div>
+​<div class="bg-eco-700/80 border border-eco-500/40 p-8 rounded-3xl shadow-xl transition hover:-translate-y-1">
+<div class="w-14 h-14 bg-eco-accent/20 border border-eco-accent/40 rounded-2xl flex items-center justify-center text-eco-accent text-2xl mb-6">
+<i class="fa-solid fa-hand-holding-dollar"></i>
+</div>
+<h3 class="text-xl font-bold text-white mb-3">Доступные цены и скидки</h3>
+<p class="text-gray-300 text-sm leading-relaxed">
+Прямые продажи от производителя без посредников. Гибкие условия при заказе крупных оптовых партий.
+</p>
+</div>
+</div>
+</div>
+</section>
+​<footer id="contacts" class="relative z-10 bg-eco-700 border-t border-eco-500/40 pt-16 pb-12">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
+<div class="space-y-4 md:col-span-2">
+<div class="flex items-center space-x-3">
+<div class="w-10 h-10 bg-eco-500 rounded-xl flex items-center justify-center text-xl border border-eco-accent/40">
+💩
+</div>
+<span class="font-extrabold text-lg text-white">ЭКО-НАВОЗ.BY</span>
+</div>
+<p class="text-sm text-gray-400 max-w-sm">
+Надежный поставщик органических удобрений высшего качества. Индивидуальный подход к каждому дачнику и фермерскому хозяйству.
+</p>
+</div>
+​<div>
+<h4 class="font-bold text-white mb-4">Навигация</h4>
+<ul class="space-y-2 text-sm text-gray-400">
+<li><a href="#about" class="hover:text-eco-accent transition">О продукте</a></li>
+<li><a href="#producer-horse" class="hover:text-eco-accent transition">Производитель</a></li>
+<li><a href="#calculator" class="hover:text-eco-accent transition">Калькулятор</a></li>
+<li><a href="#supplier" class="hover:text-eco-accent transition">Поставщик</a></li>
+</ul>
+</div>
+​<div>
+<h4 class="font-bold text-white mb-4">Контакты</h4>
+<ul class="space-y-3 text-sm text-gray-300">
+<li>
+<span class="block text-xs text-gray-400">Поставщик:</span>
+<strong class="text-white">Владислав Крестовина</strong>
+</li>
+<li>
+<span class="block text-xs text-gray-400">Telegram:</span>
+<a href="https://t.me/vlad_grishko" target="_blank" rel="noopener noreferrer" class="text-eco-accent font-bold hover:underline">@vlad_grishko</a>
+</li>
+<li>
+<span class="block text-xs text-gray-400">Телефон:</span>
+<a href="tel:+375299557050" class="text-eco-accent font-bold hover:underline">+375 (29) 955-70-50</a>
+</li>
+</ul>
+</div>
+</div>
+​<div class="pt-8 border-t border-eco-600 flex flex-col sm:flex-row items-center justify-between text-xs text-gray-400">
+<p>© 2026 Эко-Навоз. Все права защищены. Владислав Крестовина (+375299557050).</p>
+<div class="flex space-x-4 mt-4 sm:mt-0">
+<a href="https://t.me/vlad_grishko" target="_blank" rel="noopener noreferrer" class="text-eco-accent hover:underline flex items-center space-x-1">
+<i class="fa-brands fa-telegram"></i>
+<span>Связаться в Telegram</span>
+</a>
+</div>
+</div>
+</div>
+</footer>
+​<script>
+// Falling stickers animation generator (Poop emojis, plants, leaves)
+const emojis = ['💩', '🌱', '🌿', '💩', '🌿'];
+const container = document.getElementById('falling-container');
+const stickerCount = 18;
+​for (let i = 0; i < stickerCount; i++) {
+const sticker = document.createElement('div');
+sticker.className = 'falling-sticker';
+sticker.innerText = emojis[Math.floor(Math.random() * emojis.length)];
+​// Random positioning, sizing and animation speeds
+const randomX = Math.random() * 100;
+const randomDuration = 7 + Math.random() * 12; // 7 to 19 seconds
+const randomDelay = Math.random() * 10;
+const randomSize = 1.2 + Math.random() * 1.8; // rem
+​sticker.style.left = ${randomX}vw;
+sticker.style.animationDuration = ${randomDuration}s;
+sticker.style.animationDelay = -${randomDelay}s;
+sticker.style.fontSize = ${randomSize}rem;
+​container.appendChild(sticker);
+}
+​// Calculator state
+let packagingType = 'bags'; // 'bags' or 'bulk'
+​function setPackaging(type, btnElement) {
+packagingType = type;
+document.querySelectorAll('.calc-btn').forEach(b => {
+b.classList.remove('active-pack', 'border-eco-accent', 'bg-eco-500/30');
+b.classList.add('border-eco-500/50', 'bg-eco-600/50', 'text-gray-300');
+});
+btnElement.classList.add('active-pack', 'border-eco-accent', 'bg-eco-500/30');
+btnElement.classList.remove('border-eco-500/50', 'bg-eco-600/50', 'text-gray-300');
+​const slider = document.getElementById('amount-slider');
+const unitLabel = document.getElementById('unit-label');
+const minLimit = document.getElementById('min-limit');
+const maxLimit = document.getElementById('max-limit');
+​if (type === 'bags') {
+unitLabel.innerText = 'Количество мешков:';
+slider.min = 5;
+slider.max = 200;
+slider.step = 5;
+slider.value = 20;
+minLimit.innerText = '5 шт';
+maxLimit.innerText = '200 шт';
+} else {
+unitLabel.innerText = 'Объем россыпью (м³):';
+slider.min = 1;
+slider.max = 30;
+slider.step = 1;
+slider.value = 5;
+minLimit.innerText = '1 м³';
+maxLimit.innerText = '30 м³';
+}
+calculateManure();
+}
+​function calculateManure() {
+const val = parseInt(document.getElementById('amount-slider').value);
+const areaInput = document.getElementById('area-input');
+document.getElementById('amount-val').innerText = packagingType === 'bags' ? ${val} шт : ${val} м³;
+​let volumeM3 = 0;
+let price = 0;
+let recommendedArea = '';
+let typeText = '';
+​if (packagingType === 'bags') {
+volumeM3 = (val * 0.05).toFixed(1);
+price = val * 6; // 6 BYN per bag
+recommendedArea = до ${(val * 0.3).toFixed(1)} соток;
+typeText = 'В мешках по 50 л';
+} else {
+volumeM3 = val;
+price = val * 100; // 100 BYN per m3 bulk
+recommendedArea = до ${val * 6} соток;
+typeText = 'Россыпью (машина)';
+}
+​document.getElementById('res-volume').innerText = ${volumeM3} м³ (${packagingType === 'bags' ? val * 50 : val * 1000} литров);
+document.getElementById('res-area').innerText = recommendedArea;
+document.getElementById('res-type').innerText = typeText;
+document.getElementById('res-price').innerText = ${price} BYN;
+areaInput.value = Math.max(1, Math.round(parseFloat(volumeM3) * 5));
+​// Update Telegram order button with calculated parameters
+const orderBtn = document.getElementById('calc-order-btn');
+const message = encodeURIComponent(Здравствуйте, Владислав! Хочу заказать конский навоз: ${typeText}, объем ${volumeM3} м³ (${packagingType === 'bags' ? val + ' мешков' : val + ' м³'}), ориентировочная стоимость ${price} BYN.);
+orderBtn.href = https://t.me/vlad_grishko?text=${message};
+}
+​// Initialize calculator on load
+calculateManure();
+</script>
 </body>
 </html>
