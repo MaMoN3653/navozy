@@ -163,21 +163,21 @@
                 <div class="glass-panel p-3 rounded-xl border-l-4 border-blue-500 flex items-center justify-between">
                     <div>
                         <span class="text-xs text-gray-500 dark:text-gray-400 block">1 Смена</span>
-                        <span class="text-sm font-bold text-gray-900 dark:text-white">Утро (07:00)</span>
+                        <span class="text-sm font-bold text-gray-900 dark:text-white">07:30 – 16:00</span>
                     </div>
                     <span class="w-3 h-3 rounded-full bg-blue-500 shadow-lg shadow-blue-500/50"></span>
                 </div>
                 <div class="glass-panel p-3 rounded-xl border-l-4 border-amber-500 flex items-center justify-between">
                     <div>
                         <span class="text-xs text-gray-500 dark:text-gray-400 block">2 Смена</span>
-                        <span class="text-sm font-bold text-gray-900 dark:text-white">Вечер (15:00)</span>
+                        <span class="text-sm font-bold text-gray-900 dark:text-white">16:00 – 00:30</span>
                     </div>
                     <span class="w-3 h-3 rounded-full bg-amber-500 shadow-lg shadow-amber-500/50"></span>
                 </div>
                 <div class="glass-panel p-3 rounded-xl border-l-4 border-purple-500 flex items-center justify-between">
                     <div>
-                        <span class="text-xs text-gray-500 dark:text-gray-400 block">3 Смена</span>
-                        <span class="text-sm font-bold text-gray-900 dark:text-white">Ночь (23:00)</span>
+                        <span class="text-xs text-gray-500 dark:text-gray-400 block">3 Смена (Ночь)</span>
+                        <span class="text-sm font-bold text-gray-900 dark:text-white">00:30 – 07:50</span>
                     </div>
                     <span class="w-3 h-3 rounded-full bg-purple-500 shadow-lg shadow-purple-500/50"></span>
                 </div>
@@ -312,7 +312,7 @@
                 </div>
 
                 <div>
-                    <label class="block text-xs font-semibold text-gray-600 dark:text-gray-400 mb-1.5">Длительность смены (часов)</label>
+                    <label class="block text-xs font-semibold text-gray-600 dark:text-gray-400 mb-1.5">Часов в смене (для статистики)</label>
                     <input type="number" id="setting-shift-hours" min="1" max="24" value="8" class="w-full bg-gray-100 dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-xl px-3.5 py-2.5 text-gray-900 dark:text-white text-sm focus:outline-none focus:border-indigo-500">
                 </div>
 
@@ -341,11 +341,11 @@
         };
         let manualOverrides = {};
 
-        // Время начала смен по умолчанию (можно при необходимости настроить)
-        const shiftStartHours = {
-            1: 7,   // 1 смена начинается в 07:00
-            2: 15,  // 2 смена начинается в 15:00
-            3: 23   // 3 смена начинается в 23:00
+        // Точное расписание времени начала и конца смен
+        const shiftTimes = {
+            1: { startH: 7, startM: 30, endH: 16, endM: 0 },   // 07:30 - 16:00
+            2: { startH: 16, startM: 0, endH: 0, endM: 30 },  // 16:00 - 00:30
+            3: { startH: 0, startM: 30, endH: 7, endM: 50 }   // 00:30 - 07:50
         };
 
         function loadData() {
@@ -394,67 +394,67 @@
             updateShiftTimer();
         });
 
-        // Логика таймера обратного отсчета смены
+        // Интеллектуальный таймер обратного отсчета смен
         function updateShiftTimer() {
             const now = new Date();
-            const todayShift = getShiftForDate(now);
             const statusEl = document.getElementById('timer-status-text');
             const countdownEl = document.getElementById('timer-countdown');
             const iconContainer = document.getElementById('timer-icon-container');
+
+            // Проверяем текущий день, а также учитываем перенос ночной смены с предыдущего дня (если сейчас раннее утро до 07:50)
+            let activeDate = new Date(now);
+            let todayShift = getShiftForDate(activeDate);
+
+            // Если сейчас раннее утро (до 07:50), проверим, не продолжается ли ночная смена (3 смена), начатая вчера
+            if (now.getHours() < 8) {
+                let yesterday = new Date(now);
+                yesterday.setDate(yesterday.getDate() - 1);
+                let yestShift = getShiftForDate(yesterday);
+                if (yestShift.type === 3) {
+                    activeDate = yesterday;
+                    todayShift = yestShift;
+                }
+            }
 
             if (todayShift.type === 0) {
                 statusEl.innerText = "Сегодня выходной";
                 iconContainer.className = "w-8 h-8 rounded-lg bg-gray-500/10 text-gray-400 flex items-center justify-center text-sm";
                 iconContainer.innerHTML = '<i class="fa-solid fa-mug-hot"></i>';
                 
-                // Ищем начало следующей смены
-                const tomorrow = new Date(now);
-                tomorrow.setDate(tomorrow.getDate() + 1);
-                tomorrow.setHours(7, 0, 0, 0); // условно утро след дня
-                
-                let target = new Date(now);
-                target.setDate(target.getDate() + 1);
-                target.setHours(7, 0, 0, 0);
-
-                // Найдем ближайший рабочий день
-                for(let i = 1; i <= 3; i++) {
+                // Ищем начало ближайшей следующей смены
+                let target = null;
+                let foundShiftName = "";
+                for(let i = 1; i <= 4; i++) {
                     const checkDate = new Date(now);
                     checkDate.setDate(checkDate.getDate() + i);
                     const s = getShiftForDate(checkDate);
                     if(s.type > 0) {
-                        target.setDate(now.getDate() + i);
-                        target.setHours(shiftStartHours[s.type], 0, 0, 0);
+                        target = new Date(checkDate.getFullYear(), checkDate.getMonth(), checkDate.getDate(), shiftTimes[s.type].startH, shiftTimes[s.type].startM, 0);
+                        foundShiftName = s.name;
                         statusEl.innerText = `До ${s.name} (${checkDate.toLocaleDateString('ru-RU', {day: 'numeric', month: 'short'})})`;
                         break;
                     }
                 }
 
-                const diff = target - now;
-                if (diff > 0) {
-                    countdownEl.innerText = formatTimeDiff(diff);
+                if (target) {
+                    const diff = target - now;
+                    countdownEl.innerText = diff > 0 ? formatTimeDiff(diff) : "00:00:00";
                 } else {
-                    countdownEl.innerText = "00:00:00";
+                    countdownEl.innerText = "--:--:--";
                 }
                 return;
             }
 
             const shiftType = todayShift.type;
-            const startHour = shiftStartHours[shiftType];
-            const durationHours = Number(settings.shiftHours) || 8;
+            const tInfo = shiftTimes[shiftType];
 
-            let startTime = new Date(now.getFullYear(), now.getMonth(), now.getDate(), startHour, 0, 0);
-            let endTime = new Date(startTime.getTime() + durationHours * 3600 * 1000);
+            let startTime = new Date(activeDate.getFullYear(), activeDate.getMonth(), activeDate.getDate(), tInfo.startH, tInfo.startM, 0);
+            let endTime = new Date(activeDate.getFullYear(), activeDate.getMonth(), activeDate.getDate(), tInfo.endH, tInfo.endM, 0);
 
-            // Если ночная смена (например, начинается в 23:00) переходит на следующий день
-            if (endTime < startTime) {
-                if (now < startTime) {
-                    startTime.setDate(startTime.getDate() - 1);
-                    endTime.setDate(endTime.getDate() - 1);
-                }
+            // Если смена заканчивается на следующий день (для 2 и 3 смен)
+            if (endTime <= startTime) {
+                endTime.setDate(endTime.getDate() + 1);
             }
-
-            let targetTime;
-            let statusLabel = "";
 
             let colorClass = "bg-blue-500/10 text-blue-500";
             if (shiftType === 3) colorClass = "bg-purple-500/10 text-purple-400";
@@ -462,29 +462,42 @@
             iconContainer.className = `w-8 h-8 rounded-lg ${colorClass} flex items-center justify-center text-sm`;
             iconContainer.innerHTML = '<i class="fa-solid fa-clock"></i>';
 
+            let targetTime;
+            let statusLabel = "";
+
             if (now < startTime) {
-                // Смена еще не началась
                 targetTime = startTime;
                 statusLabel = `До начала ${todayShift.name}`;
             } else if (now >= startTime && now < endTime) {
-                // Смена идет
                 targetTime = endTime;
                 statusLabel = `До конца ${todayShift.name}`;
             } else {
-                // Смена закончилась, ищем следующую
-                statusLabel = "Смена завершена";
-                countdownEl.innerText = "00:00:00";
-                statusEl.innerText = statusLabel;
+                // Смена на сегодня уже полностью завершена, ищем следующую
+                statusEl.innerText = "Смена завершена";
+                
+                let target = null;
+                for(let i = 1; i <= 3; i++) {
+                    const checkDate = new Date(now);
+                    checkDate.setDate(checkDate.getDate() + i);
+                    const s = getShiftForDate(checkDate);
+                    if(s.type > 0) {
+                        target = new Date(checkDate.getFullYear(), checkDate.getMonth(), checkDate.getDate(), shiftTimes[s.type].startH, shiftTimes[s.type].startM, 0);
+                        statusEl.innerText = `До ${s.name} (${checkDate.toLocaleDateString('ru-RU', {day: 'numeric', month: 'short'})})`;
+                        break;
+                    }
+                }
+                if (target) {
+                    const diff = target - now;
+                    countdownEl.innerText = diff > 0 ? formatTimeDiff(diff) : "00:00:00";
+                } else {
+                    countdownEl.innerText = "00:00:00";
+                }
                 return;
             }
 
             statusEl.innerText = statusLabel;
             const diff = targetTime - now;
-            if (diff > 0) {
-                countdownEl.innerText = formatTimeDiff(diff);
-            } else {
-                countdownEl.innerText = "00:00:00";
-            }
+            countdownEl.innerText = diff > 0 ? formatTimeDiff(diff) : "00:00:00";
         }
 
         function formatTimeDiff(ms) {
