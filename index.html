@@ -16,7 +16,6 @@
             background-color: #0b0f19;
             color: #f3f4f6;
         }
-        /* Кастомный скроллбар */
         ::-webkit-scrollbar {
             width: 8px;
             height: 8px;
@@ -56,7 +55,7 @@
                 </div>
                 <div>
                     <h1 class="text-lg font-bold bg-gradient-to-r from-white via-gray-200 to-gray-400 bg-clip-text text-transparent">График Смен</h1>
-                    <p class="text-xs text-gray-400">Цикл: 5д (1с) → 5д (3с) → 5д (2с)</p>
+                    <p class="text-xs text-gray-400">Нажмите на день для ручной правки</p>
                 </div>
             </div>
 
@@ -135,6 +134,9 @@
 
             <!-- Сетка календаря -->
             <div class="glass-panel rounded-2xl p-4 sm:p-6 shadow-xl overflow-hidden">
+                <div class="text-xs text-indigo-300/80 mb-3 flex items-center gap-1.5 bg-indigo-500/10 px-3 py-2 rounded-xl border border-indigo-500/20">
+                    <i class="fa-solid fa-circle-info"></i> Кликните по любому дню в календаре, чтобы изменить его смену вручную.
+                </div>
                 <!-- Дни недели -->
                 <div class="grid grid-cols-7 gap-2 mb-3 text-center">
                     <div class="text-xs font-semibold text-gray-400 py-1">Пн</div>
@@ -239,7 +241,7 @@
                 <div>
                     <label class="block text-xs font-semibold text-gray-400 mb-1.5">Дата любого рабочего понедельника</label>
                     <input type="date" id="setting-start-date" class="w-full bg-gray-900 border border-gray-700 rounded-xl px-3.5 py-2.5 text-white text-sm focus:outline-none focus:border-indigo-500">
-                    <p class="text-[11px] text-gray-400 mt-1">Выберите любой известный рабочий понедельник. Всю эту неделю будет стоять та смена, с которой начинается 15-дневный цикл.</p>
+                    <p class="text-[11px] text-gray-400 mt-1">Выберите эталонный понедельник для авто-генерации цикла.</p>
                 </div>
 
                 <div>
@@ -255,6 +257,12 @@
                     <label class="block text-xs font-semibold text-gray-400 mb-1.5">Длительность смены (часов)</label>
                     <input type="number" id="setting-shift-hours" min="1" max="24" value="8" class="w-full bg-gray-900 border border-gray-700 rounded-xl px-3.5 py-2.5 text-white text-sm focus:outline-none focus:border-indigo-500">
                 </div>
+
+                <div class="pt-2 border-t border-gray-800">
+                    <button onclick="resetManualOverrides()" class="w-full px-4 py-2.5 rounded-xl text-xs font-semibold bg-rose-500/10 text-rose-400 hover:bg-rose-500/20 border border-rose-500/30 transition-all">
+                        Сбросить все ручные изменения
+                    </button>
+                </div>
             </div>
 
             <div class="flex items-center justify-end gap-3 pt-2">
@@ -266,36 +274,37 @@
 
     <!-- СКРИПТ ЛОГИКИ -->
     <script>
-        // Состояние приложения
         let currentDate = new Date();
         let settings = {
-            startDate: '2026-03-02', // Любой эталонный понедельник (например, 2 марта 2026)
-            startShift: 1,           // Какая смена была в этот понедельник (1, 3 или 2)
-            shiftHours: 8            // Часов в смене
+            startDate: '2026-03-02', 
+            startShift: 1,           
+            shiftHours: 8            
         };
+        // Словарь ручных правок вида { 'YYYY-MM-DD': shiftType }
+        let manualOverrides = {};
 
-        // Загрузка настроек из localStorage
-        function loadSettings() {
-            const saved = localStorage.getItem('shift_tracker_settings');
-            if (saved) {
-                try {
-                    settings = JSON.parse(saved);
-                } catch(e) {}
+        function loadData() {
+            const savedSettings = localStorage.getItem('shift_tracker_settings');
+            if (savedSettings) {
+                try { settings = JSON.parse(savedSettings); } catch(e) {}
+            }
+            const savedOverrides = localStorage.getItem('shift_tracker_overrides');
+            if (savedOverrides) {
+                try { manualOverrides = JSON.parse(savedOverrides); } catch(e) {}
             }
         }
 
-        function saveSettingsToStorage() {
+        function saveData() {
             localStorage.setItem('shift_tracker_settings', JSON.stringify(settings));
+            localStorage.setItem('shift_tracker_overrides', JSON.stringify(manualOverrides));
         }
 
-        // Инициализация
         document.addEventListener('DOMContentLoaded', () => {
-            loadSettings();
+            loadData();
             renderCalendar();
             initSettingsModal();
         });
 
-        // Переключение вкладок
         function switchTab(tab) {
             const calTab = document.getElementById('tab-calendar');
             const statsTab = document.getElementById('tab-stats');
@@ -317,7 +326,6 @@
             }
         }
 
-        // Навигация по месяцам
         function changeMonth(direction) {
             currentDate.setMonth(currentDate.getMonth() + direction);
             renderCalendar();
@@ -328,50 +336,87 @@
             renderCalendar();
         }
 
-        // Вычисление смены для конкретной даты
-        function getShiftForDate(date) {
-            const d = new Date(date.getFullYear(), date.getMonth(), date.getDate());
-            const dayOfWeek = d.getDay(); // 0 - ВС, 1 - ПН, ..., 6 - СБ
+        function formatDateKey(date) {
+            const y = date.getFullYear();
+            const m = String(date.getMonth() + 1).padStart(2, '0');
+            const d = String(date.getDate()).padStart(2, '0');
+            return `${y}-${m}-${d}`;
+        }
 
-            // Суббота и воскресенье - всегда выходные
+        // Авто-расчет смены по формуле
+        function getAutoShiftForDate(date) {
+            const d = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+            const dayOfWeek = d.getDay();
+
             if (dayOfWeek === 0 || dayOfWeek === 6) {
-                return { type: 0, name: 'Выходной', color: 'bg-gray-800/60 text-gray-400 border-gray-700/50' };
+                return 0; // Выходной
             }
 
-            // Находим понедельник этой же недели
             const monday = new Date(d);
             const diffToMonday = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
             monday.setDate(monday.getDate() + diffToMonday);
             monday.setHours(0,0,0,0);
 
-            // Базовый понедельник из настроек
             const refMondayParts = settings.startDate.split('-');
             const refMonday = new Date(parseInt(refMondayParts[0]), parseInt(refMondayParts[1]) - 1, parseInt(refMondayParts[2]));
             refMonday.setHours(0,0,0,0);
 
-            // Разница в неделях
             const diffTime = monday.getTime() - refMonday.getTime();
             const diffWeeks = Math.round(diffTime / (1000 * 60 * 60 * 24 * 7));
 
-            // Цикл смен: 1 -> 3 -> 2 (каждая смена длится 1 неделю, полный цикл 3 недели)
             const shiftOrder = [1, 3, 2];
             const refShiftIndex = shiftOrder.indexOf(Number(settings.startShift));
             
             let targetIndex = (refShiftIndex + (diffWeeks % 3)) % 3;
             if (targetIndex < 0) targetIndex += 3;
 
-            const shiftNum = shiftOrder[targetIndex];
+            return shiftOrder[targetIndex];
+        }
+
+        // Итоговая смена с учетом ручных правок
+        function getShiftForDate(date) {
+            const key = formatDateKey(date);
+            let shiftNum;
+
+            if (manualOverrides.hasOwnProperty(key)) {
+                shiftNum = manualOverrides[key];
+            } else {
+                shiftNum = getAutoShiftForDate(date);
+            }
 
             if (shiftNum === 1) {
                 return { type: 1, name: '1 Смена', color: 'bg-blue-500/20 text-blue-300 border-blue-500/40 shadow-sm shadow-blue-500/10' };
             } else if (shiftNum === 3) {
                 return { type: 3, name: '3 Смена', color: 'bg-purple-500/20 text-purple-300 border-purple-500/40 shadow-sm shadow-purple-500/10' };
-            } else {
+            } else if (shiftNum === 2) {
                 return { type: 2, name: '2 Смена', color: 'bg-amber-500/20 text-amber-300 border-amber-500/40 shadow-sm shadow-amber-500/10' };
+            } else {
+                return { type: 0, name: 'Выходной', color: 'bg-gray-800/60 text-gray-400 border-gray-700/50' };
             }
         }
 
-        // Рендеринг календаря
+        // Клик по дню для циклического переключения (0 -> 1 -> 3 -> 2 -> 0)
+        function handleDayClick(year, month, day) {
+            const clickedDate = new Date(year, month, day);
+            const key = formatDateKey(clickedDate);
+
+            // Узнаем текущее значение
+            let currentVal;
+            if (manualOverrides.hasOwnProperty(key)) {
+                currentVal = manualOverrides[key];
+            } else {
+                currentVal = getAutoShiftForDate(clickedDate);
+            }
+
+            // Цикл переключения: 0 (вых) -> 1 -> 3 -> 2 -> 0
+            const cycle = [0, 1, 3, 2];
+            let nextIndex = (cycle.indexOf(currentVal) + 1) % cycle.length;
+            manualOverrides[key] = cycle[nextIndex];
+
+            saveData();
+            renderCalendar();
+        }
+
         function renderCalendar() {
             const year = currentDate.getFullYear();
             const month = currentDate.getMonth();
@@ -382,17 +427,13 @@
             const grid = document.getElementById('calendar-grid');
             grid.innerHTML = '';
 
-            // Первый день месяца
             const firstDayOfMonth = new Date(year, month, 1);
             let startingDay = firstDayOfMonth.getDay();
-            // Превращаем вс (0) в 7 для удобства Пн-ВС
             startingDay = startingDay === 0 ? 7 : startingDay;
 
-            // Последний день месяца
             const lastDayDate = new Date(year, month + 1, 0);
             const totalDays = lastDayDate.getDate();
 
-            // Пустые ячейки для дней предыдущего месяца
             for (let i = 1; i < startingDay; i++) {
                 const emptyCell = document.createElement('div');
                 emptyCell.className = "h-20 sm:h-24 rounded-xl bg-gray-900/20 border border-gray-800/40 opacity-30";
@@ -402,7 +443,6 @@
             let monthWorkHours = 0;
             const today = new Date();
 
-            // Дни текущего месяца
             for (let day = 1; day <= totalDays; day++) {
                 const currDate = new Date(year, month, day);
                 const shiftInfo = getShiftForDate(currDate);
@@ -415,8 +455,12 @@
                                 currDate.getMonth() === today.getMonth() && 
                                 currDate.getFullYear() === today.getFullYear();
 
+                const isManual = manualOverrides.hasOwnProperty(formatDateKey(currDate));
+
                 const cell = document.createElement('div');
-                cell.className = `h-20 sm:h-24 rounded-xl p-2 flex flex-col justify-between border transition-all ${shiftInfo.color} ${isToday ? 'ring-2 ring-indigo-400 ring-offset-2 ring-offset-gray-900' : ''}`;
+                cell.className = `h-20 sm:h-24 rounded-xl p-2 flex flex-col justify-between border cursor-pointer transition-all hover:scale-[1.02] hover:border-indigo-400 ${shiftInfo.color} ${isToday ? 'ring-2 ring-indigo-400 ring-offset-2 ring-offset-gray-900' : ''}`;
+                
+                cell.onclick = () => handleDayClick(year, month, day);
 
                 let shiftBadge = '';
                 if (shiftInfo.type > 0) {
@@ -429,7 +473,10 @@
                 cell.innerHTML = `
                     <div class="flex items-center justify-between">
                         <span class="text-xs sm:text-sm font-bold ${isToday ? 'bg-indigo-500 text-white w-6 h-6 rounded-full flex items-center justify-center' : ''}">${day}</span>
-                        ${isToday ? '<span class="text-[9px] bg-indigo-500/20 text-indigo-300 px-1.5 py-0.5 rounded font-medium hidden sm:inline">Сегодня</span>' : ''}
+                        <div class="flex items-center gap-1">
+                            ${isManual ? '<span class="text-[9px] bg-amber-500/20 text-amber-300 px-1.5 py-0.5 rounded font-medium" title="Изменено вручную">руч.</span>' : ''}
+                            ${isToday ? '<span class="text-[9px] bg-indigo-500/20 text-indigo-300 px-1.5 py-0.5 rounded font-medium hidden sm:inline">Сегодня</span>' : ''}
+                        </div>
                     </div>
                     <div>${shiftBadge}</div>
                 `;
@@ -439,7 +486,6 @@
             document.getElementById('month-hours-badge').innerText = `${monthWorkHours} ч`;
         }
 
-        // Рендеринг статистики
         function renderStats() {
             const year = currentDate.getFullYear();
             const month = currentDate.getMonth();
@@ -479,7 +525,6 @@
             document.getElementById('stat-s3-hours').innerText = `${s3Count * settings.shiftHours} ч`;
         }
 
-        // Управление модальным окном настроек
         function openSettings() {
             document.getElementById('setting-start-date').value = settings.startDate;
             document.getElementById('setting-start-shift').value = settings.startShift;
@@ -513,9 +558,18 @@
             settings.startShift = Number(shiftVal);
             settings.shiftHours = Number(hoursVal) || 8;
 
-            saveSettingsToStorage();
+            saveData();
             closeSettings();
             renderCalendar();
+        }
+
+        function resetManualOverrides() {
+            if (confirm('Сбросить все индивидуальные правки смен и вернуться к чистому циклу?')) {
+                manualOverrides = {};
+                saveData();
+                closeSettings();
+                renderCalendar();
+            }
         }
     </script>
 </body>
