@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="ru" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,23 +13,51 @@
     <style>
         body {
             font-family: 'Inter', sans-serif;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        /* Стили для темной темы */
+        .dark body {
             background-color: #0b0f19;
             color: #f3f4f6;
+        }
+        .dark .glass-panel {
+            background: rgba(17, 24, 39, 0.75);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .dark::-webkit-scrollbar-track {
+            background: #111827;
+        }
+        .dark::-webkit-scrollbar-thumb {
+            background: #374151;
+        }
+
+        /* Стили для светлой темы */
+        body {
+            background-color: #f3f4f6;
+            color: #1f2937;
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(0, 0, 0, 0.06);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
         }
         ::-webkit-scrollbar {
             width: 8px;
             height: 8px;
         }
         ::-webkit-scrollbar-track {
-            background: #111827;
+            background: #e5e7eb;
         }
         ::-webkit-scrollbar-thumb {
-            background: #374151;
+            background: #9ca3af;
             border-radius: 4px;
         }
         ::-webkit-scrollbar-thumb:hover {
-            background: #4b5563;
+            background: #6b7280;
         }
+
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(8px); }
             to { opacity: 1; transform: translateY(0); }
@@ -37,37 +65,67 @@
         .animate-fade {
             animation: fadeIn 0.3s ease-out forwards;
         }
-        .glass-panel {
-            background: rgba(17, 24, 39, 0.75);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-        }
     </style>
 </head>
 <body class="min-h-screen flex flex-col antialiased selection:bg-indigo-500 selection:text-white pb-12">
 
     <!-- Шапка -->
-    <header class="glass-panel sticky top-0 z-40 border-b border-gray-800/80 px-4 py-3 sm:px-8">
-        <div class="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-violet-500 flex items-center justify-center shadow-lg shadow-indigo-500/30">
-                    <i class="fa-solid fa-calendar-days text-white text-lg"></i>
+    <header class="glass-panel sticky top-0 z-40 border-b dark:border-gray-800/80 px-4 py-3 sm:px-8">
+        <div class="max-w-6xl mx-auto flex flex-col lg:flex-row items-center justify-between gap-4">
+            <div class="flex items-center gap-3 w-full lg:w-auto justify-between lg:justify-start">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-violet-500 flex items-center justify-center shadow-lg shadow-indigo-500/30">
+                        <i class="fa-solid fa-calendar-days text-white text-lg"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-lg font-bold bg-gradient-to-r from-indigo-500 via-indigo-600 to-violet-600 dark:from-white dark:via-gray-200 dark:to-gray-400 bg-clip-text text-transparent">График Смен</h1>
+                        <p class="text-xs text-gray-500 dark:text-gray-400">Нажмите на день для ручной правки</p>
+                    </div>
                 </div>
-                <div>
-                    <h1 class="text-lg font-bold bg-gradient-to-r from-white via-gray-200 to-gray-400 bg-clip-text text-transparent">График Смен</h1>
-                    <p class="text-xs text-gray-400">Нажмите на день для ручной правки</p>
+                <!-- Мобильные кнопки управления -->
+                <div class="flex items-center gap-1.5 lg:hidden">
+                    <button onclick="toggleTheme()" class="w-9 h-9 rounded-xl flex items-center justify-center transition-all bg-gray-200 dark:bg-gray-800 text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-700/50">
+                        <i id="theme-icon-mob" class="fa-solid fa-moon text-sm"></i>
+                    </button>
+                    <button onclick="openSettings()" class="w-9 h-9 rounded-xl flex items-center justify-center transition-all bg-gray-200 dark:bg-gray-800 text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-700/50">
+                        <i class="fa-solid fa-gear text-sm"></i>
+                    </button>
                 </div>
             </div>
 
-            <div class="flex items-center gap-2 w-full sm:w-auto justify-end">
-                <button onclick="switchTab('calendar')" id="tab-calendar-btn" class="flex-1 sm:flex-none px-4 py-2 rounded-xl text-sm font-medium transition-all flex items-center justify-center gap-2 bg-indigo-600 text-white shadow-lg shadow-indigo-600/30">
+            <!-- Виджет таймера смен -->
+            <div id="shift-timer-widget" class="flex items-center gap-3 bg-gray-100 dark:bg-gray-900/60 px-4 py-2 rounded-2xl border border-gray-300 dark:border-gray-800 shadow-inner">
+                <div id="timer-icon-container" class="w-8 h-8 rounded-lg bg-blue-500/10 text-blue-500 flex items-center justify-center text-sm">
+                    <i class="fa-solid fa-clock"></i>
+                </div>
+                <div class="text-left">
+                    <div class="text-[10px] uppercase tracking-wider font-semibold text-gray-500 dark:text-gray-400" id="timer-status-text">Загрузка смены...</div>
+                    <div class="text-sm font-bold font-mono text-gray-900 dark:text-white" id="timer-countdown">--:--:--</div>
+                </div>
+            </div>
+
+            <div class="hidden lg:flex items-center gap-2">
+                <button onclick="switchTab('calendar')" id="tab-calendar-btn" class="px-4 py-2 rounded-xl text-sm font-medium transition-all flex items-center gap-2 bg-indigo-600 text-white shadow-lg shadow-indigo-600/30">
                     <i class="fa-solid fa-calendar"></i> Календарь
                 </button>
-                <button onclick="switchTab('stats')" id="tab-stats-btn" class="flex-1 sm:flex-none px-4 py-2 rounded-xl text-sm font-medium transition-all flex items-center justify-center gap-2 bg-gray-800/80 text-gray-300 hover:bg-gray-700 hover:text-white border border-gray-700/50">
+                <button onclick="switchTab('stats')" id="tab-stats-btn" class="px-4 py-2 rounded-xl text-sm font-medium transition-all flex items-center gap-2 bg-gray-200 dark:bg-gray-800/80 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-700 border border-gray-300 dark:border-gray-700/50">
                     <i class="fa-solid fa-chart-pie"></i> Статистика
                 </button>
-                <button onclick="openSettings()" class="px-3 py-2 rounded-xl text-sm font-medium transition-all bg-gray-800/80 text-gray-300 hover:bg-gray-700 hover:text-white border border-gray-700/50" title="Настройки цикла">
+                <button onclick="toggleTheme()" class="w-10 h-10 rounded-xl flex items-center justify-center transition-all bg-gray-200 dark:bg-gray-800/80 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-700 border border-gray-300 dark:border-gray-700/50" title="Сменить тему">
+                    <i id="theme-icon" class="fa-solid fa-moon"></i>
+                </button>
+                <button onclick="openSettings()" class="w-10 h-10 rounded-xl flex items-center justify-center transition-all bg-gray-200 dark:bg-gray-800/80 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-700 border border-gray-300 dark:border-gray-700/50" title="Настройки цикла">
                     <i class="fa-solid fa-gear"></i>
+                </button>
+            </div>
+
+            <!-- Мобильное переключение вкладок -->
+            <div class="flex items-center gap-2 w-full lg:hidden">
+                <button onclick="switchTab('calendar')" id="tab-calendar-btn-mob" class="flex-1 px-4 py-2 rounded-xl text-sm font-medium transition-all flex items-center justify-center gap-2 bg-indigo-600 text-white shadow-lg shadow-indigo-600/30">
+                    <i class="fa-solid fa-calendar"></i> Календарь
+                </button>
+                <button onclick="switchTab('stats')" id="tab-stats-btn-mob" class="flex-1 px-4 py-2 rounded-xl text-sm font-medium transition-all flex items-center justify-center gap-2 bg-gray-200 dark:bg-gray-800/80 text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-700/50">
+                    <i class="fa-solid fa-chart-pie"></i> Статистика
                 </button>
             </div>
         </div>
@@ -81,21 +139,21 @@
             <!-- Панель управления месяцами -->
             <div class="glass-panel rounded-2xl p-4 sm:p-6 shadow-xl flex flex-col sm:flex-row items-center justify-between gap-4">
                 <div class="flex items-center gap-3 w-full sm:w-auto justify-between sm:justify-start">
-                    <button onclick="changeMonth(-1)" class="w-10 h-10 rounded-xl bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white flex items-center justify-center transition-all border border-gray-700/60 active:scale-95">
+                    <button onclick="changeMonth(-1)" class="w-10 h-10 rounded-xl bg-gray-200 dark:bg-gray-800 hover:bg-gray-300 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 flex items-center justify-center transition-all border border-gray-300 dark:border-gray-700/60 active:scale-95">
                         <i class="fa-solid fa-chevron-left"></i>
                     </button>
-                    <h2 id="current-month-year" class="text-xl sm:text-2xl font-bold tracking-tight text-white min-w-[220px] text-center">Октябрь 2026</h2>
-                    <button onclick="changeMonth(1)" class="w-10 h-10 rounded-xl bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white flex items-center justify-center transition-all border border-gray-700/60 active:scale-95">
+                    <h2 id="current-month-year" class="text-xl sm:text-2xl font-bold tracking-tight text-gray-900 dark:text-white min-w-[220px] text-center">Октябрь 2026</h2>
+                    <button onclick="changeMonth(1)" class="w-10 h-10 rounded-xl bg-gray-200 dark:bg-gray-800 hover:bg-gray-300 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 flex items-center justify-center transition-all border border-gray-300 dark:border-gray-700/60 active:scale-95">
                         <i class="fa-solid fa-chevron-right"></i>
                     </button>
                 </div>
 
                 <div class="flex items-center gap-2 w-full sm:w-auto justify-between sm:justify-end">
-                    <button onclick="goToCurrentMonth()" class="px-3.5 py-2 rounded-xl text-xs font-semibold bg-gray-800 hover:bg-gray-700 text-indigo-400 hover:text-indigo-300 transition-all border border-indigo-500/30">
+                    <button onclick="goToCurrentMonth()" class="px-3.5 py-2 rounded-xl text-xs font-semibold bg-gray-200 dark:bg-gray-800 hover:bg-gray-300 dark:hover:bg-gray-700 text-indigo-600 dark:text-indigo-400 transition-all border border-indigo-500/30">
                         Сегодня
                     </button>
-                    <div class="text-xs text-gray-400 bg-gray-900/60 px-3 py-2 rounded-xl border border-gray-800">
-                        Сменных часов: <span id="month-hours-badge" class="font-bold text-indigo-400">0 ч</span>
+                    <div class="text-xs text-gray-600 dark:text-gray-400 bg-gray-100 dark:bg-gray-900/60 px-3 py-2 rounded-xl border border-gray-300 dark:border-gray-800">
+                        Сменных часов: <span id="month-hours-badge" class="font-bold text-indigo-600 dark:text-indigo-400">0 ч</span>
                     </div>
                 </div>
             </div>
@@ -104,48 +162,48 @@
             <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
                 <div class="glass-panel p-3 rounded-xl border-l-4 border-blue-500 flex items-center justify-between">
                     <div>
-                        <span class="text-xs text-gray-400 block">1 Смена</span>
-                        <span class="text-sm font-bold text-white">Утро</span>
+                        <span class="text-xs text-gray-500 dark:text-gray-400 block">1 Смена</span>
+                        <span class="text-sm font-bold text-gray-900 dark:text-white">Утро (07:00)</span>
                     </div>
                     <span class="w-3 h-3 rounded-full bg-blue-500 shadow-lg shadow-blue-500/50"></span>
                 </div>
                 <div class="glass-panel p-3 rounded-xl border-l-4 border-amber-500 flex items-center justify-between">
                     <div>
-                        <span class="text-xs text-gray-400 block">2 Смена</span>
-                        <span class="text-sm font-bold text-white">Вечер</span>
+                        <span class="text-xs text-gray-500 dark:text-gray-400 block">2 Смена</span>
+                        <span class="text-sm font-bold text-gray-900 dark:text-white">Вечер (15:00)</span>
                     </div>
                     <span class="w-3 h-3 rounded-full bg-amber-500 shadow-lg shadow-amber-500/50"></span>
                 </div>
                 <div class="glass-panel p-3 rounded-xl border-l-4 border-purple-500 flex items-center justify-between">
                     <div>
-                        <span class="text-xs text-gray-400 block">3 Смена</span>
-                        <span class="text-sm font-bold text-white">Ночь</span>
+                        <span class="text-xs text-gray-500 dark:text-gray-400 block">3 Смена</span>
+                        <span class="text-sm font-bold text-gray-900 dark:text-white">Ночь (23:00)</span>
                     </div>
                     <span class="w-3 h-3 rounded-full bg-purple-500 shadow-lg shadow-purple-500/50"></span>
                 </div>
-                <div class="glass-panel p-3 rounded-xl border-l-4 border-gray-600 flex items-center justify-between">
+                <div class="glass-panel p-3 rounded-xl border-l-4 border-gray-400 dark:border-gray-600 flex items-center justify-between">
                     <div>
-                        <span class="text-xs text-gray-400 block">Выходной</span>
-                        <span class="text-sm font-bold text-gray-300">Отдых</span>
+                        <span class="text-xs text-gray-500 dark:text-gray-400 block">Выходной</span>
+                        <span class="text-sm font-bold text-gray-700 dark:text-gray-300">Отдых</span>
                     </div>
-                    <span class="w-3 h-3 rounded-full bg-gray-600"></span>
+                    <span class="w-3 h-3 rounded-full bg-gray-400 dark:bg-gray-600"></span>
                 </div>
             </div>
 
             <!-- Сетка календаря -->
             <div class="glass-panel rounded-2xl p-4 sm:p-6 shadow-xl overflow-hidden">
-                <div class="text-xs text-indigo-300/80 mb-3 flex items-center gap-1.5 bg-indigo-500/10 px-3 py-2 rounded-xl border border-indigo-500/20">
+                <div class="text-xs text-indigo-600 dark:text-indigo-300/80 mb-3 flex items-center gap-1.5 bg-indigo-500/10 px-3 py-2 rounded-xl border border-indigo-500/20">
                     <i class="fa-solid fa-circle-info"></i> Кликните по любому дню в календаре, чтобы изменить его смену вручную.
                 </div>
                 <!-- Дни недели -->
                 <div class="grid grid-cols-7 gap-2 mb-3 text-center">
-                    <div class="text-xs font-semibold text-gray-400 py-1">Пн</div>
-                    <div class="text-xs font-semibold text-gray-400 py-1">Вт</div>
-                    <div class="text-xs font-semibold text-gray-400 py-1">Ср</div>
-                    <div class="text-xs font-semibold text-gray-400 py-1">Чт</div>
-                    <div class="text-xs font-semibold text-gray-400 py-1">Пт</div>
-                    <div class="text-xs font-semibold text-rose-400/80 py-1">Сб</div>
-                    <div class="text-xs font-semibold text-rose-400/80 py-1">Вс</div>
+                    <div class="text-xs font-semibold text-gray-500 dark:text-gray-400 py-1">Пн</div>
+                    <div class="text-xs font-semibold text-gray-500 dark:text-gray-400 py-1">Вт</div>
+                    <div class="text-xs font-semibold text-gray-500 dark:text-gray-400 py-1">Ср</div>
+                    <div class="text-xs font-semibold text-gray-500 dark:text-gray-400 py-1">Чт</div>
+                    <div class="text-xs font-semibold text-gray-500 dark:text-gray-400 py-1">Пт</div>
+                    <div class="text-xs font-semibold text-rose-500 dark:text-rose-400/80 py-1">Сб</div>
+                    <div class="text-xs font-semibold text-rose-500 dark:text-rose-400/80 py-1">Вс</div>
                 </div>
 
                 <!-- Дни месяца -->
@@ -158,66 +216,66 @@
         <!-- ВКЛАДКА: СТАТИСТИКА -->
         <section id="tab-stats" class="animate-fade hidden space-y-6">
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <div class="glass-panel p-5 rounded-2xl border border-gray-800">
+                <div class="glass-panel p-5 rounded-2xl border border-gray-200 dark:border-gray-800">
                     <div class="flex items-center justify-between mb-3">
-                        <span class="text-sm text-gray-400 font-medium">Часов за месяц</span>
-                        <div class="w-8 h-8 rounded-lg bg-indigo-500/10 text-indigo-400 flex items-center justify-center">
+                        <span class="text-sm text-gray-500 dark:text-gray-400 font-medium">Часов за месяц</span>
+                        <div class="w-8 h-8 rounded-lg bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 flex items-center justify-center">
                             <i class="fa-solid fa-clock"></i>
                         </div>
                     </div>
-                    <div class="text-3xl font-extrabold text-white" id="stat-month-hours">0 ч</div>
-                    <p class="text-xs text-gray-400 mt-1" id="stat-month-name">За текущий месяц</p>
+                    <div class="text-3xl font-extrabold text-gray-900 dark:text-white" id="stat-month-hours">0 ч</div>
+                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-1" id="stat-month-name">За текущий месяц</p>
                 </div>
 
-                <div class="glass-panel p-5 rounded-2xl border border-gray-800">
+                <div class="glass-panel p-5 rounded-2xl border border-gray-200 dark:border-gray-800">
                     <div class="flex items-center justify-between mb-3">
-                        <span class="text-sm text-gray-400 font-medium">Смен за месяц</span>
-                        <div class="w-8 h-8 rounded-lg bg-violet-500/10 text-violet-400 flex items-center justify-center">
+                        <span class="text-sm text-gray-500 dark:text-gray-400 font-medium">Смен за месяц</span>
+                        <div class="w-8 h-8 rounded-lg bg-violet-500/10 text-violet-600 dark:text-violet-400 flex items-center justify-center">
                             <i class="fa-solid fa-briefcase"></i>
                         </div>
                     </div>
-                    <div class="text-3xl font-extrabold text-white" id="stat-month-shifts">0</div>
-                    <p class="text-xs text-gray-400 mt-1">рабочих смен в месяце</p>
+                    <div class="text-3xl font-extrabold text-gray-900 dark:text-white" id="stat-month-shifts">0</div>
+                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">рабочих смен в месяце</p>
                 </div>
 
-                <div class="glass-panel p-5 rounded-2xl border border-gray-800">
+                <div class="glass-panel p-5 rounded-2xl border border-gray-200 dark:border-gray-800">
                     <div class="flex items-center justify-between mb-3">
-                        <span class="text-sm text-gray-400 font-medium">Всего часов (период)</span>
-                        <div class="w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-400 flex items-center justify-center">
+                        <span class="text-sm text-gray-500 dark:text-gray-400 font-medium">Всего часов (период)</span>
+                        <div class="w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
                             <i class="fa-solid fa-chart-line"></i>
                         </div>
                     </div>
-                    <div class="text-3xl font-extrabold text-white" id="stat-total-hours">0 ч</div>
-                    <p class="text-xs text-gray-400 mt-1">Накопительный итог</p>
+                    <div class="text-3xl font-extrabold text-gray-900 dark:text-white" id="stat-total-hours">0 ч</div>
+                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Накопительный итог</p>
                 </div>
             </div>
 
             <!-- Детализация смен по типам за месяц -->
             <div class="glass-panel rounded-2xl p-6 shadow-xl space-y-4">
-                <h3 class="text-lg font-bold text-white flex items-center gap-2">
-                    <i class="fa-solid fa-chart-pie text-indigo-400"></i> Распределение смен в этом месяце
+                <h3 class="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                    <i class="fa-solid fa-chart-pie text-indigo-600 dark:text-indigo-400"></i> Распределение смен в этом месяце
                 </h3>
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
-                    <div class="bg-gray-900/50 p-4 rounded-xl border border-gray-800 flex items-center justify-between">
+                    <div class="bg-gray-100 dark:bg-gray-900/50 p-4 rounded-xl border border-gray-200 dark:border-gray-800 flex items-center justify-between">
                         <div>
-                            <span class="text-xs text-blue-400 font-medium block">1 Смена (Утро)</span>
-                            <span class="text-xl font-bold text-white" id="stat-s1-count">0 смен</span>
+                            <span class="text-xs text-blue-600 dark:text-blue-400 font-medium block">1 Смена (Утро)</span>
+                            <span class="text-xl font-bold text-gray-900 dark:text-white" id="stat-s1-count">0 смен</span>
                         </div>
-                        <span class="text-sm text-gray-400 font-semibold" id="stat-s1-hours">0 ч</span>
+                        <span class="text-sm text-gray-600 dark:text-gray-400 font-semibold" id="stat-s1-hours">0 ч</span>
                     </div>
-                    <div class="bg-gray-900/50 p-4 rounded-xl border border-gray-800 flex items-center justify-between">
+                    <div class="bg-gray-100 dark:bg-gray-900/50 p-4 rounded-xl border border-gray-200 dark:border-gray-800 flex items-center justify-between">
                         <div>
-                            <span class="text-xs text-amber-400 font-medium block">2 Смена (Вечер)</span>
-                            <span class="text-xl font-bold text-white" id="stat-s2-count">0 смен</span>
+                            <span class="text-xs text-amber-600 dark:text-amber-400 font-medium block">2 Смена (Вечер)</span>
+                            <span class="text-xl font-bold text-gray-900 dark:text-white" id="stat-s2-count">0 смен</span>
                         </div>
-                        <span class="text-sm text-gray-400 font-semibold" id="stat-s2-hours">0 ч</span>
+                        <span class="text-sm text-gray-600 dark:text-gray-400 font-semibold" id="stat-s2-hours">0 ч</span>
                     </div>
-                    <div class="bg-gray-900/50 p-4 rounded-xl border border-gray-800 flex items-center justify-between">
+                    <div class="bg-gray-100 dark:bg-gray-900/50 p-4 rounded-xl border border-gray-200 dark:border-gray-800 flex items-center justify-between">
                         <div>
-                            <span class="text-xs text-purple-400 font-medium block">3 Смена (Ночь)</span>
-                            <span class="text-xl font-bold text-white" id="stat-s3-count">0 смен</span>
+                            <span class="text-xs text-purple-600 dark:text-purple-400 font-medium block">3 Смена (Ночь)</span>
+                            <span class="text-xl font-bold text-gray-900 dark:text-white" id="stat-s3-count">0 смен</span>
                         </div>
-                        <span class="text-sm text-gray-400 font-semibold" id="stat-s3-hours">0 ч</span>
+                        <span class="text-sm text-gray-600 dark:text-gray-400 font-semibold" id="stat-s3-hours">0 ч</span>
                     </div>
                 </div>
             </div>
@@ -226,27 +284,27 @@
     </main>
 
     <!-- МОДАЛЬНОЕ ОКНО НАСТРОЕК -->
-    <div id="settings-modal" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm hidden items-center justify-center p-4">
-        <div class="glass-panel rounded-2xl max-w-md w-full p-6 space-y-6 shadow-2xl border border-gray-700 animate-fade">
+    <div id="settings-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden items-center justify-center p-4">
+        <div class="glass-panel rounded-2xl max-w-md w-full p-6 space-y-6 shadow-2xl border dark:border-gray-700 animate-fade">
             <div class="flex items-center justify-between">
-                <h3 class="text-lg font-bold text-white flex items-center gap-2">
-                    <i class="fa-solid fa-gear text-indigo-400"></i> Настройки графика
+                <h3 class="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                    <i class="fa-solid fa-gear text-indigo-600 dark:text-indigo-400"></i> Настройки графика
                 </h3>
-                <button onclick="closeSettings()" class="text-gray-400 hover:text-white p-1">
+                <button onclick="closeSettings()" class="text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white p-1">
                     <i class="fa-solid fa-xmark text-lg"></i>
                 </button>
             </div>
 
             <div class="space-y-4">
                 <div>
-                    <label class="block text-xs font-semibold text-gray-400 mb-1.5">Дата любого рабочего понедельника</label>
-                    <input type="date" id="setting-start-date" class="w-full bg-gray-900 border border-gray-700 rounded-xl px-3.5 py-2.5 text-white text-sm focus:outline-none focus:border-indigo-500">
-                    <p class="text-[11px] text-gray-400 mt-1">Выберите эталонный понедельник для авто-генерации цикла.</p>
+                    <label class="block text-xs font-semibold text-gray-600 dark:text-gray-400 mb-1.5">Дата любого рабочего понедельника</label>
+                    <input type="date" id="setting-start-date" class="w-full bg-gray-100 dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-xl px-3.5 py-2.5 text-gray-900 dark:text-white text-sm focus:outline-none focus:border-indigo-500">
+                    <p class="text-[11px] text-gray-500 dark:text-gray-400 mt-1">Выберите эталонный понедельник для авто-генерации цикла.</p>
                 </div>
 
                 <div>
-                    <label class="block text-xs font-semibold text-gray-400 mb-1.5">Смена для выбранной недели</label>
-                    <select id="setting-start-shift" class="w-full bg-gray-900 border border-gray-700 rounded-xl px-3.5 py-2.5 text-white text-sm focus:outline-none focus:border-indigo-500">
+                    <label class="block text-xs font-semibold text-gray-600 dark:text-gray-400 mb-1.5">Смена для выбранной недели</label>
+                    <select id="setting-start-shift" class="w-full bg-gray-100 dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-xl px-3.5 py-2.5 text-gray-900 dark:text-white text-sm focus:outline-none focus:border-indigo-500">
                         <option value="1">1 Смена (Утренняя неделя)</option>
                         <option value="3">3 Смена (Ночная неделя)</option>
                         <option value="2">2 Смена (Вечерняя неделя)</option>
@@ -254,19 +312,19 @@
                 </div>
 
                 <div>
-                    <label class="block text-xs font-semibold text-gray-400 mb-1.5">Длительность смены (часов)</label>
-                    <input type="number" id="setting-shift-hours" min="1" max="24" value="8" class="w-full bg-gray-900 border border-gray-700 rounded-xl px-3.5 py-2.5 text-white text-sm focus:outline-none focus:border-indigo-500">
+                    <label class="block text-xs font-semibold text-gray-600 dark:text-gray-400 mb-1.5">Длительность смены (часов)</label>
+                    <input type="number" id="setting-shift-hours" min="1" max="24" value="8" class="w-full bg-gray-100 dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-xl px-3.5 py-2.5 text-gray-900 dark:text-white text-sm focus:outline-none focus:border-indigo-500">
                 </div>
 
-                <div class="pt-2 border-t border-gray-800">
-                    <button onclick="resetManualOverrides()" class="w-full px-4 py-2.5 rounded-xl text-xs font-semibold bg-rose-500/10 text-rose-400 hover:bg-rose-500/20 border border-rose-500/30 transition-all">
+                <div class="pt-2 border-t border-gray-200 dark:border-gray-800">
+                    <button onclick="resetManualOverrides()" class="w-full px-4 py-2.5 rounded-xl text-xs font-semibold bg-rose-500/10 text-rose-600 dark:text-rose-400 hover:bg-rose-500/20 border border-rose-500/30 transition-all">
                         Сбросить все ручные изменения
                     </button>
                 </div>
             </div>
 
             <div class="flex items-center justify-end gap-3 pt-2">
-                <button onclick="closeSettings()" class="px-4 py-2.5 rounded-xl text-sm font-medium bg-gray-800 text-gray-300 hover:bg-gray-700">Отмена</button>
+                <button onclick="closeSettings()" class="px-4 py-2.5 rounded-xl text-sm font-medium bg-gray-200 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-700">Отмена</button>
                 <button onclick="saveSettings()" class="px-5 py-2.5 rounded-xl text-sm font-semibold bg-indigo-600 text-white hover:bg-indigo-500 shadow-lg shadow-indigo-600/30">Сохранить</button>
             </div>
         </div>
@@ -278,10 +336,17 @@
         let settings = {
             startDate: '2026-03-02', 
             startShift: 1,           
-            shiftHours: 8            
+            shiftHours: 8,
+            theme: 'dark'            
         };
-        // Словарь ручных правок вида { 'YYYY-MM-DD': shiftType }
         let manualOverrides = {};
+
+        // Время начала смен по умолчанию (можно при необходимости настроить)
+        const shiftStartHours = {
+            1: 7,   // 1 смена начинается в 07:00
+            2: 15,  // 2 смена начинается в 15:00
+            3: 23   // 3 смена начинается в 23:00
+        };
 
         function loadData() {
             const savedSettings = localStorage.getItem('shift_tracker_settings');
@@ -292,6 +357,7 @@
             if (savedOverrides) {
                 try { manualOverrides = JSON.parse(savedOverrides); } catch(e) {}
             }
+            applyTheme(settings.theme || 'dark');
         }
 
         function saveData() {
@@ -299,29 +365,164 @@
             localStorage.setItem('shift_tracker_overrides', JSON.stringify(manualOverrides));
         }
 
+        function applyTheme(theme) {
+            const html = document.documentElement;
+            const icon = document.getElementById('theme-icon');
+            const iconMob = document.getElementById('theme-icon-mob');
+            if (theme === 'light') {
+                html.classList.remove('dark');
+                if (icon) icon.className = "fa-solid fa-sun text-amber-500";
+                if (iconMob) iconMob.className = "fa-solid fa-sun text-amber-500";
+            } else {
+                html.classList.add('dark');
+                if (icon) icon.className = "fa-solid fa-moon text-indigo-400";
+                if (iconMob) iconMob.className = "fa-solid fa-moon text-indigo-400";
+            }
+        }
+
+        function toggleTheme() {
+            settings.theme = settings.theme === 'light' ? 'dark' : 'light';
+            applyTheme(settings.theme);
+            saveData();
+        }
+
         document.addEventListener('DOMContentLoaded', () => {
             loadData();
             renderCalendar();
             initSettingsModal();
+            setInterval(updateShiftTimer, 1000);
+            updateShiftTimer();
         });
+
+        // Логика таймера обратного отсчета смены
+        function updateShiftTimer() {
+            const now = new Date();
+            const todayShift = getShiftForDate(now);
+            const statusEl = document.getElementById('timer-status-text');
+            const countdownEl = document.getElementById('timer-countdown');
+            const iconContainer = document.getElementById('timer-icon-container');
+
+            if (todayShift.type === 0) {
+                statusEl.innerText = "Сегодня выходной";
+                iconContainer.className = "w-8 h-8 rounded-lg bg-gray-500/10 text-gray-400 flex items-center justify-center text-sm";
+                iconContainer.innerHTML = '<i class="fa-solid fa-mug-hot"></i>';
+                
+                // Ищем начало следующей смены
+                const tomorrow = new Date(now);
+                tomorrow.setDate(tomorrow.getDate() + 1);
+                tomorrow.setHours(7, 0, 0, 0); // условно утро след дня
+                
+                let target = new Date(now);
+                target.setDate(target.getDate() + 1);
+                target.setHours(7, 0, 0, 0);
+
+                // Найдем ближайший рабочий день
+                for(let i = 1; i <= 3; i++) {
+                    const checkDate = new Date(now);
+                    checkDate.setDate(checkDate.getDate() + i);
+                    const s = getShiftForDate(checkDate);
+                    if(s.type > 0) {
+                        target.setDate(now.getDate() + i);
+                        target.setHours(shiftStartHours[s.type], 0, 0, 0);
+                        statusEl.innerText = `До ${s.name} (${checkDate.toLocaleDateString('ru-RU', {day: 'numeric', month: 'short'})})`;
+                        break;
+                    }
+                }
+
+                const diff = target - now;
+                if (diff > 0) {
+                    countdownEl.innerText = formatTimeDiff(diff);
+                } else {
+                    countdownEl.innerText = "00:00:00";
+                }
+                return;
+            }
+
+            const shiftType = todayShift.type;
+            const startHour = shiftStartHours[shiftType];
+            const durationHours = Number(settings.shiftHours) || 8;
+
+            let startTime = new Date(now.getFullYear(), now.getMonth(), now.getDate(), startHour, 0, 0);
+            let endTime = new Date(startTime.getTime() + durationHours * 3600 * 1000);
+
+            // Если ночная смена (например, начинается в 23:00) переходит на следующий день
+            if (endTime < startTime) {
+                if (now < startTime) {
+                    startTime.setDate(startTime.getDate() - 1);
+                    endTime.setDate(endTime.getDate() - 1);
+                }
+            }
+
+            let targetTime;
+            let statusLabel = "";
+
+            let colorClass = "bg-blue-500/10 text-blue-500";
+            if (shiftType === 3) colorClass = "bg-purple-500/10 text-purple-400";
+            if (shiftType === 2) colorClass = "bg-amber-500/10 text-amber-500";
+            iconContainer.className = `w-8 h-8 rounded-lg ${colorClass} flex items-center justify-center text-sm`;
+            iconContainer.innerHTML = '<i class="fa-solid fa-clock"></i>';
+
+            if (now < startTime) {
+                // Смена еще не началась
+                targetTime = startTime;
+                statusLabel = `До начала ${todayShift.name}`;
+            } else if (now >= startTime && now < endTime) {
+                // Смена идет
+                targetTime = endTime;
+                statusLabel = `До конца ${todayShift.name}`;
+            } else {
+                // Смена закончилась, ищем следующую
+                statusLabel = "Смена завершена";
+                countdownEl.innerText = "00:00:00";
+                statusEl.innerText = statusLabel;
+                return;
+            }
+
+            statusEl.innerText = statusLabel;
+            const diff = targetTime - now;
+            if (diff > 0) {
+                countdownEl.innerText = formatTimeDiff(diff);
+            } else {
+                countdownEl.innerText = "00:00:00";
+            }
+        }
+
+        function formatTimeDiff(ms) {
+            const totalSec = Math.floor(ms / 1000);
+            const hours = Math.floor(totalSec / 3600);
+            const mins = Math.floor((totalSec % 3600) / 60);
+            const secs = totalSec % 60;
+            return `${String(hours).padStart(2, '0')}:${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+        }
 
         function switchTab(tab) {
             const calTab = document.getElementById('tab-calendar');
             const statsTab = document.getElementById('tab-stats');
             const calBtn = document.getElementById('tab-calendar-btn');
             const statsBtn = document.getElementById('tab-stats-btn');
+            const calBtnMob = document.getElementById('tab-calendar-btn-mob');
+            const statsBtnMob = document.getElementById('tab-stats-btn-mob');
+
+            const activeClass = "flex-1 px-4 py-2 rounded-xl text-sm font-medium transition-all flex items-center justify-center gap-2 bg-indigo-600 text-white shadow-lg shadow-indigo-600/30";
+            const inactiveClass = "flex-1 px-4 py-2 rounded-xl text-sm font-medium transition-all flex items-center justify-center gap-2 bg-gray-200 dark:bg-gray-800/80 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-700 border border-gray-300 dark:border-gray-700/50";
+            const desktopInactive = "px-4 py-2 rounded-xl text-sm font-medium transition-all flex items-center gap-2 bg-gray-200 dark:bg-gray-800/80 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-700 border border-gray-300 dark:border-gray-700/50";
+            const desktopActive = "px-4 py-2 rounded-xl text-sm font-medium transition-all flex items-center gap-2 bg-indigo-600 text-white shadow-lg shadow-indigo-600/30";
 
             if (tab === 'calendar') {
                 calTab.classList.remove('hidden');
                 statsTab.classList.add('hidden');
-                calBtn.className = "flex-1 sm:flex-none px-4 py-2 rounded-xl text-sm font-medium transition-all flex items-center justify-center gap-2 bg-indigo-600 text-white shadow-lg shadow-indigo-600/30";
-                statsBtn.className = "flex-1 sm:flex-none px-4 py-2 rounded-xl text-sm font-medium transition-all flex items-center justify-center gap-2 bg-gray-800/80 text-gray-300 hover:bg-gray-700 hover:text-white border border-gray-700/50";
+                calBtn.className = desktopActive;
+                statsBtn.className = desktopInactive;
+                calBtnMob.className = activeClass;
+                statsBtnMob.className = inactiveClass;
                 renderCalendar();
             } else {
                 statsTab.classList.remove('hidden');
                 calTab.classList.add('hidden');
-                statsBtn.className = "flex-1 sm:flex-none px-4 py-2 rounded-xl text-sm font-medium transition-all flex items-center justify-center gap-2 bg-indigo-600 text-white shadow-lg shadow-indigo-600/30";
-                calBtn.className = "flex-1 sm:flex-none px-4 py-2 rounded-xl text-sm font-medium transition-all flex items-center justify-center gap-2 bg-gray-800/80 text-gray-300 hover:bg-gray-700 hover:text-white border border-gray-700/50";
+                statsBtn.className = desktopActive;
+                calBtn.className = desktopInactive;
+                statsBtnMob.className = activeClass;
+                calBtnMob.className = inactiveClass;
                 renderStats();
             }
         }
@@ -343,13 +544,12 @@
             return `${y}-${m}-${d}`;
         }
 
-        // Авто-расчет смены по формуле
         function getAutoShiftForDate(date) {
             const d = new Date(date.getFullYear(), date.getMonth(), date.getDate());
             const dayOfWeek = d.getDay();
 
             if (dayOfWeek === 0 || dayOfWeek === 6) {
-                return 0; // Выходной
+                return 0;
             }
 
             const monday = new Date(d);
@@ -373,7 +573,6 @@
             return shiftOrder[targetIndex];
         }
 
-        // Итоговая смена с учетом ручных правок
         function getShiftForDate(date) {
             const key = formatDateKey(date);
             let shiftNum;
@@ -384,23 +583,23 @@
                 shiftNum = getAutoShiftForDate(date);
             }
 
+            const isLight = !document.documentElement.classList.contains('dark');
+
             if (shiftNum === 1) {
-                return { type: 1, name: '1 Смена', color: 'bg-blue-500/20 text-blue-300 border-blue-500/40 shadow-sm shadow-blue-500/10' };
+                return { type: 1, name: '1 Смена', color: isLight ? 'bg-blue-500/15 text-blue-700 border-blue-500/30' : 'bg-blue-500/20 text-blue-300 border-blue-500/40 shadow-sm shadow-blue-500/10' };
             } else if (shiftNum === 3) {
-                return { type: 3, name: '3 Смена', color: 'bg-purple-500/20 text-purple-300 border-purple-500/40 shadow-sm shadow-purple-500/10' };
+                return { type: 3, name: '3 Смена', color: isLight ? 'bg-purple-500/15 text-purple-700 border-purple-500/30' : 'bg-purple-500/20 text-purple-300 border-purple-500/40 shadow-sm shadow-purple-500/10' };
             } else if (shiftNum === 2) {
-                return { type: 2, name: '2 Смена', color: 'bg-amber-500/20 text-amber-300 border-amber-500/40 shadow-sm shadow-amber-500/10' };
+                return { type: 2, name: '2 Смена', color: isLight ? 'bg-amber-500/15 text-amber-700 border-amber-500/30' : 'bg-amber-500/20 text-amber-300 border-amber-500/40 shadow-sm shadow-amber-500/10' };
             } else {
-                return { type: 0, name: 'Выходной', color: 'bg-gray-800/60 text-gray-400 border-gray-700/50' };
+                return { type: 0, name: 'Выходной', color: isLight ? 'bg-gray-200/60 text-gray-500 border-gray-300/60' : 'bg-gray-800/60 text-gray-400 border-gray-700/50' };
             }
         }
 
-        // Клик по дню для циклического переключения (0 -> 1 -> 3 -> 2 -> 0)
         function handleDayClick(year, month, day) {
             const clickedDate = new Date(year, month, day);
             const key = formatDateKey(clickedDate);
 
-            // Узнаем текущее значение
             let currentVal;
             if (manualOverrides.hasOwnProperty(key)) {
                 currentVal = manualOverrides[key];
@@ -408,13 +607,13 @@
                 currentVal = getAutoShiftForDate(clickedDate);
             }
 
-            // Цикл переключения: 0 (вых) -> 1 -> 3 -> 2 -> 0
             const cycle = [0, 1, 3, 2];
             let nextIndex = (cycle.indexOf(currentVal) + 1) % cycle.length;
             manualOverrides[key] = cycle[nextIndex];
 
             saveData();
             renderCalendar();
+            updateShiftTimer();
         }
 
         function renderCalendar() {
@@ -436,7 +635,7 @@
 
             for (let i = 1; i < startingDay; i++) {
                 const emptyCell = document.createElement('div');
-                emptyCell.className = "h-20 sm:h-24 rounded-xl bg-gray-900/20 border border-gray-800/40 opacity-30";
+                emptyCell.className = "h-20 sm:h-24 rounded-xl bg-gray-200/30 dark:bg-gray-900/20 border border-gray-300/40 dark:border-gray-800/40 opacity-30";
                 grid.appendChild(emptyCell);
             }
 
@@ -458,24 +657,24 @@
                 const isManual = manualOverrides.hasOwnProperty(formatDateKey(currDate));
 
                 const cell = document.createElement('div');
-                cell.className = `h-20 sm:h-24 rounded-xl p-2 flex flex-col justify-between border cursor-pointer transition-all hover:scale-[1.02] hover:border-indigo-400 ${shiftInfo.color} ${isToday ? 'ring-2 ring-indigo-400 ring-offset-2 ring-offset-gray-900' : ''}`;
+                cell.className = `h-20 sm:h-24 rounded-xl p-2 flex flex-col justify-between border cursor-pointer transition-all hover:scale-[1.02] hover:border-indigo-500 ${shiftInfo.color} ${isToday ? 'ring-2 ring-indigo-500 ring-offset-2 dark:ring-offset-gray-900' : ''}`;
                 
                 cell.onclick = () => handleDayClick(year, month, day);
 
                 let shiftBadge = '';
                 if (shiftInfo.type > 0) {
-                    let dotColor = shiftInfo.type === 1 ? 'bg-blue-400' : (shiftInfo.type === 3 ? 'bg-purple-400' : 'bg-amber-400');
-                    shiftBadge = `<span class="inline-flex items-center gap-1.5 text-[10px] sm:text-xs font-semibold px-1.5 py-0.5 rounded-md bg-black/30"><span class="w-1.5 h-1.5 rounded-full ${dotColor}"></span>${shiftInfo.name}</span>`;
+                    let dotColor = shiftInfo.type === 1 ? 'bg-blue-500' : (shiftInfo.type === 3 ? 'bg-purple-500' : 'bg-amber-500');
+                    shiftBadge = `<span class="inline-flex items-center gap-1.5 text-[10px] sm:text-xs font-semibold px-1.5 py-0.5 rounded-md bg-black/10 dark:bg-black/30"><span class="w-1.5 h-1.5 rounded-full ${dotColor}"></span>${shiftInfo.name}</span>`;
                 } else {
-                    shiftBadge = `<span class="text-[10px] sm:text-xs text-gray-400 font-medium">Выходной</span>`;
+                    shiftBadge = `<span class="text-[10px] sm:text-xs text-gray-500 dark:text-gray-400 font-medium">Выходной</span>`;
                 }
 
                 cell.innerHTML = `
                     <div class="flex items-center justify-between">
-                        <span class="text-xs sm:text-sm font-bold ${isToday ? 'bg-indigo-500 text-white w-6 h-6 rounded-full flex items-center justify-center' : ''}">${day}</span>
+                        <span class="text-xs sm:text-sm font-bold ${isToday ? 'bg-indigo-600 text-white w-6 h-6 rounded-full flex items-center justify-center' : ''}">${day}</span>
                         <div class="flex items-center gap-1">
-                            ${isManual ? '<span class="text-[9px] bg-amber-500/20 text-amber-300 px-1.5 py-0.5 rounded font-medium" title="Изменено вручную">руч.</span>' : ''}
-                            ${isToday ? '<span class="text-[9px] bg-indigo-500/20 text-indigo-300 px-1.5 py-0.5 rounded font-medium hidden sm:inline">Сегодня</span>' : ''}
+                            ${isManual ? '<span class="text-[9px] bg-amber-500/20 text-amber-700 dark:text-amber-300 px-1.5 py-0.5 rounded font-medium" title="Изменено вручную">руч.</span>' : ''}
+                            ${isToday ? '<span class="text-[9px] bg-indigo-500/20 text-indigo-700 dark:text-indigo-300 px-1.5 py-0.5 rounded font-medium hidden sm:inline">Сегодня</span>' : ''}
                         </div>
                     </div>
                     <div>${shiftBadge}</div>
@@ -561,6 +760,7 @@
             saveData();
             closeSettings();
             renderCalendar();
+            updateShiftTimer();
         }
 
         function resetManualOverrides() {
@@ -569,6 +769,7 @@
                 saveData();
                 closeSettings();
                 renderCalendar();
+                updateShiftTimer();
             }
         }
     </script>
